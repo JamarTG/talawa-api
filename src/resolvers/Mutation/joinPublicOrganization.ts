@@ -1,15 +1,15 @@
-import type { MutationResolvers } from "../../types/generatedGraphQLTypes";
-import { User, Organization } from "../../models";
-import { errors, requestContext } from "../../libraries";
+import { Types } from "mongoose";
 import {
   ORGANIZATION_NOT_FOUND_ERROR,
   USER_ALREADY_MEMBER_ERROR,
   USER_NOT_AUTHORIZED_ERROR,
   USER_NOT_FOUND_ERROR,
 } from "../../constants";
-import { findOrganizationsInCache } from "../../services/OrganizationCache/findOrganizationsInCache";
+import { errors, requestContext } from "../../libraries";
+import { Organization, User } from "../../models";
 import { cacheOrganizations } from "../../services/OrganizationCache/cacheOrganizations";
-import { Types } from "mongoose";
+import { findOrganizationsInCache } from "../../services/OrganizationCache/findOrganizationsInCache";
+import type { MutationResolvers } from "../../types/generatedGraphQLTypes";
 /**
  * This function enables to join a public organization.
  * @param _parent - parent of current request
@@ -17,7 +17,7 @@ import { Types } from "mongoose";
  * @param context - context of entire application
  * @remarks The following checks are done:
  * 1. If the organization exists
- * 2. If the organization is public.
+ * 2. If the organization required user registration
  * 3. If the user exists
  * 4. If the user is already a member of the organization.
  * @returns Updated user.
@@ -45,34 +45,32 @@ export const joinPublicOrganization: MutationResolvers["joinPublicOrganization"]
       throw new errors.NotFoundError(
         requestContext.translate(ORGANIZATION_NOT_FOUND_ERROR.MESSAGE),
         ORGANIZATION_NOT_FOUND_ERROR.CODE,
-        ORGANIZATION_NOT_FOUND_ERROR.PARAM
+        ORGANIZATION_NOT_FOUND_ERROR.PARAM,
       );
     }
 
-    // Checks whether organization is public.
-    if (organization.isPublic === false) {
+    // Checks whether organization requires user registration.
+    if (organization.userRegistrationRequired === true) {
       throw new errors.UnauthorizedError(
         requestContext.translate(USER_NOT_AUTHORIZED_ERROR.MESSAGE),
         USER_NOT_AUTHORIZED_ERROR.CODE,
-        USER_NOT_AUTHORIZED_ERROR.PARAM
+        USER_NOT_AUTHORIZED_ERROR.PARAM,
       );
     }
-
     const currentUserExists = await User.exists({
       _id: context.userId,
     });
-
     // Checks whether currentUser with _id === context.userId exists.
     if (currentUserExists === false) {
       throw new errors.NotFoundError(
         requestContext.translate(USER_NOT_FOUND_ERROR.MESSAGE),
         USER_NOT_FOUND_ERROR.CODE,
-        USER_NOT_FOUND_ERROR.PARAM
+        USER_NOT_FOUND_ERROR.PARAM,
       );
     }
 
     const currentUserIsOrganizationMember = organization.members.some(
-      (member) => Types.ObjectId(member).equals(context.userId)
+      (member) => Types.ObjectId(member).equals(context.userId),
     );
 
     // Checks whether currentUser with _id === context.userId is already a member of organzation.
@@ -80,7 +78,7 @@ export const joinPublicOrganization: MutationResolvers["joinPublicOrganization"]
       throw new errors.ConflictError(
         requestContext.translate(USER_ALREADY_MEMBER_ERROR.MESSAGE),
         USER_ALREADY_MEMBER_ERROR.CODE,
-        USER_ALREADY_MEMBER_ERROR.PARAM
+        USER_ALREADY_MEMBER_ERROR.PARAM,
       );
     }
 
@@ -96,7 +94,7 @@ export const joinPublicOrganization: MutationResolvers["joinPublicOrganization"]
       },
       {
         new: true,
-      }
+      },
     );
 
     if (updatedOrganization !== null) {
@@ -118,7 +116,7 @@ export const joinPublicOrganization: MutationResolvers["joinPublicOrganization"]
       },
       {
         new: true,
-      }
+      },
     )
       .select(["-password"])
       .populate("joinedOrganizations")

@@ -110,13 +110,13 @@ describe("resolvers -> Mutation -> leaveOrganization", () => {
         },
         {
           $set: {
-            creator: Types.ObjectId().toString(),
+            creatorId: Types.ObjectId().toString(),
             members: [Types.ObjectId().toString()],
           },
         },
         {
           new: true,
-        }
+        },
       );
 
       if (updatedOrganization !== null) {
@@ -154,7 +154,7 @@ describe("resolvers -> Mutation -> leaveOrganization", () => {
       },
       {
         new: true,
-      }
+      },
     );
 
     if (updatedOrganization !== null) {
@@ -172,7 +172,7 @@ describe("resolvers -> Mutation -> leaveOrganization", () => {
     const leaveOrganizationPayload = await leaveOrganizationResolver?.(
       {},
       args,
-      context
+      context,
     );
 
     const updatedTestUser = await User.findOne({

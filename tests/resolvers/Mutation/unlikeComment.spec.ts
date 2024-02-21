@@ -25,7 +25,7 @@ beforeAll(async () => {
 
   testComment = await Comment.create({
     text: "text",
-    creator: testUser?._id,
+    creatorId: testUser?._id,
     postId: testPost?._id,
     likedBy: [testUser?._id],
     likeCount: 1,
@@ -42,7 +42,7 @@ beforeAll(async () => {
       $inc: {
         commentCount: 1,
       },
-    }
+    },
   );
 });
 
@@ -89,7 +89,7 @@ describe("resolvers -> Mutation -> unlikeComment", () => {
     const unlikeCommentPayload = await unlikeCommentResolver?.(
       {},
       args,
-      context
+      context,
     );
 
     const testUnlikeCommentPayload = await Comment.findOne({
@@ -112,7 +112,7 @@ describe("resolvers -> Mutation -> unlikeComment", () => {
     const unlikeCommentPayload = await unlikeCommentResolver?.(
       {},
       args,
-      context
+      context,
     );
 
     const testUnlikeCommentPayload = await Comment.findOne({

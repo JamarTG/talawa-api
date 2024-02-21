@@ -10,21 +10,29 @@ import {
   USER_NOT_AUTHORIZED_ERROR,
 } from "../../../src/constants";
 import { beforeEach, afterEach, describe, it, expect, vi } from "vitest";
-import type { TestUserType } from "../../helpers/userAndOrg";
+import type {
+  TestOrganizationType,
+  TestUserType,
+} from "../../helpers/userAndOrg";
 import type { TestPostType } from "../../helpers/posts";
-import { createTestPost } from "../../helpers/posts";
+import { createTestPost, createTestSinglePost } from "../../helpers/posts";
 
 let testUser: TestUserType;
 let testPost: TestPostType;
+let testOrganization: TestOrganizationType;
+let testPost2: TestPostType;
 
 beforeEach(async () => {
   await connect();
-  const temp = await createTestPost();
+  const temp = await createTestPost(true);
   testUser = temp[0];
+  testOrganization = temp[1];
   testPost = temp[2];
+  testPost2 = await createTestSinglePost(testUser?.id, testOrganization?.id);
+
   const { requestContext } = await import("../../../src/libraries");
   vi.spyOn(requestContext, "translate").mockImplementation(
-    (message) => message
+    (message) => message,
   );
 });
 afterEach(async () => {
@@ -61,7 +69,7 @@ describe("resolvers -> Mutation -> updatePost", () => {
 
       await Post.updateOne(
         { _id: testPost?._id },
-        { $set: { creator: Types.ObjectId().toString() } }
+        { $set: { creatorId: Types.ObjectId().toString() } },
       );
 
       await updatePostResolver?.({}, args, context);
@@ -139,7 +147,7 @@ describe("resolvers -> Mutation -> updatePost", () => {
   it(`throws String Length Validation error if title is greater than 256 characters`, async () => {
     const { requestContext } = await import("../../../src/libraries");
     vi.spyOn(requestContext, "translate").mockImplementationOnce(
-      (message) => message
+      (message) => message,
     );
     try {
       const args: MutationUpdatePostArgs = {
@@ -164,14 +172,14 @@ describe("resolvers -> Mutation -> updatePost", () => {
       await updatePostResolver?.({}, args, context);
     } catch (error: any) {
       expect(error.message).toEqual(
-        `${LENGTH_VALIDATION_ERROR.MESSAGE} 256 characters in title`
+        `${LENGTH_VALIDATION_ERROR.MESSAGE} 256 characters in title`,
       );
     }
   });
   it(`throws String Length Validation error if text is greater than 500 characters`, async () => {
     const { requestContext } = await import("../../../src/libraries");
     vi.spyOn(requestContext, "translate").mockImplementationOnce(
-      (message) => message
+      (message) => message,
     );
     try {
       const args: MutationUpdatePostArgs = {
@@ -195,8 +203,65 @@ describe("resolvers -> Mutation -> updatePost", () => {
       await updatePostResolver?.({}, args, context);
     } catch (error: any) {
       expect(error.message).toEqual(
-        `${LENGTH_VALIDATION_ERROR.MESSAGE} 500 characters in information`
+        `${LENGTH_VALIDATION_ERROR.MESSAGE} 500 characters in information`,
       );
+    }
+  });
+
+  it("throws error if title is provided and post is not pinned", async () => {
+    const { requestContext } = await import("../../../src/libraries");
+    vi.spyOn(requestContext, "translate").mockImplementationOnce(
+      (message) => message,
+    );
+    try {
+      const args: MutationUpdatePostArgs = {
+        id: testPost2?._id,
+        data: {
+          title: "Test title",
+          text: "Test text",
+        },
+      };
+
+      const context = {
+        userId: testUser?.id,
+      };
+
+      const { updatePost: updatePostResolver } = await import(
+        "../../../src/resolvers/Mutation/updatePost"
+      );
+
+      await updatePostResolver?.({}, args, context);
+    } catch (error: any) {
+      expect(error.message).toEqual(
+        `Post needs to be pinned inorder to add a title`,
+      );
+    }
+  });
+
+  it(`throws error if title is not provided and post is pinned`, async () => {
+    const { requestContext } = await import("../../../src/libraries");
+    vi.spyOn(requestContext, "translate").mockImplementationOnce(
+      (message) => message,
+    );
+    try {
+      const args: MutationUpdatePostArgs = {
+        id: testPost?._id,
+        data: {
+          text: "Testing text",
+        },
+      };
+
+      const context = {
+        userId: testUser?.id,
+      };
+
+      const { updatePost: updatePostResolver } = await import(
+        "../../../src/resolvers/Mutation/updatePost"
+      );
+
+      await updatePostResolver?.({}, args, context);
+    } catch (error: any) {
+      expect(error.message).toEqual(`Please provide a title to pin post`);
     }
   });
 });

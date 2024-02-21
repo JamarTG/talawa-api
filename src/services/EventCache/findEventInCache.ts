@@ -4,7 +4,7 @@ import { Types } from "mongoose";
 import { logger } from "../../libraries";
 
 export async function findEventsInCache(
-  ids: string[]
+  ids: string[],
 ): Promise<(InterfaceEvent | null)[]> {
   if (ids.length === 0) {
     return [null];
@@ -54,7 +54,11 @@ export async function findEventsInCache(
 
         ...(eventObj?.endTime ? { endTime: new Date(eventObj.endTime) } : {}), // Conditional removal of endTime field
 
-        creator: Types.ObjectId(eventObj.creator),
+        creatorId: Types.ObjectId(eventObj.creatorId),
+
+        createdAt: new Date(eventObj.createdAt),
+
+        updatedAt: new Date(eventObj.updatedAt),
       };
     } catch (parseError) {
       logger.info(`Error parsing JSON:${parseError}`);

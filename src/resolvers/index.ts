@@ -1,20 +1,22 @@
 import type { Resolvers } from "../types/generatedGraphQLTypes";
+import { ActionItem } from "./ActionItem";
+import { ActionItemCategory } from "./ActionItemCategory";
 import { CheckIn } from "./CheckIn";
 import { Comment } from "./Comment";
 import { DirectChat } from "./DirectChat";
 import { DirectChatMessage } from "./DirectChatMessage";
 import { Event } from "./Event";
-import { EventProject } from "./EventProject";
+import { EventVolunteer } from "./EventVolunteer";
 import { Feedback } from "./Feedback";
 import { GroupChat } from "./GroupChat";
 import { GroupChatMessage } from "./GroupChatMessage";
 import { MembershipRequest } from "./MembershipRequest";
 import { Mutation } from "./Mutation";
+import { UserFamily } from "./UserFamily";
 import { Organization } from "./Organization";
 import { Post } from "./Post";
 import { Query } from "./Query";
 import { Subscription } from "./Subscription";
-import { Task } from "./Task";
 import { User } from "./User";
 import { UserTag } from "./UserTag";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
@@ -33,14 +35,17 @@ import {
 } from "graphql-scalars";
 
 const resolvers: Resolvers = {
+  ActionItem,
+  ActionItemCategory,
   CheckIn,
   Comment,
   DirectChat,
   DirectChatMessage,
   Event,
-  EventProject,
+  EventVolunteer,
   Feedback,
   GroupChat,
+  UserFamily,
   GroupChatMessage,
   MembershipRequest,
   Mutation,
@@ -48,7 +53,6 @@ const resolvers: Resolvers = {
   Post,
   Query,
   Subscription,
-  Task,
   User,
   UserTag,
 
@@ -91,5 +95,5 @@ const resolversComposition = {
 
 export const composedResolvers: Resolvers = composeResolvers(
   resolvers,
-  resolversComposition
+  resolversComposition,
 );

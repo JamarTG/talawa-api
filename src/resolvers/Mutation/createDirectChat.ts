@@ -20,7 +20,7 @@ import { cacheOrganizations } from "../../services/OrganizationCache/cacheOrgani
 export const createDirectChat: MutationResolvers["createDirectChat"] = async (
   _parent,
   args,
-  context
+  context,
 ) => {
   let organization;
 
@@ -43,7 +43,7 @@ export const createDirectChat: MutationResolvers["createDirectChat"] = async (
     throw new errors.NotFoundError(
       requestContext.translate(ORGANIZATION_NOT_FOUND_ERROR.MESSAGE),
       ORGANIZATION_NOT_FOUND_ERROR.CODE,
-      ORGANIZATION_NOT_FOUND_ERROR.PARAM
+      ORGANIZATION_NOT_FOUND_ERROR.PARAM,
     );
   }
 
@@ -61,7 +61,7 @@ export const createDirectChat: MutationResolvers["createDirectChat"] = async (
       throw new errors.NotFoundError(
         requestContext.translate(USER_NOT_FOUND_ERROR.MESSAGE),
         USER_NOT_FOUND_ERROR.CODE,
-        USER_NOT_FOUND_ERROR.PARAM
+        USER_NOT_FOUND_ERROR.PARAM,
       );
     }
 
@@ -70,7 +70,7 @@ export const createDirectChat: MutationResolvers["createDirectChat"] = async (
 
   // Creates new directChat.
   const createdDirectChat = await DirectChat.create({
-    creator: context.userId,
+    creatorId: context.userId,
     users: usersInDirectChat,
     organization: args.data.organizationId,
   });

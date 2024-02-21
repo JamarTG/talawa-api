@@ -9,6 +9,7 @@ import {
   POST_NOT_FOUND_ERROR,
   USER_NOT_FOUND_ERROR,
   USER_NOT_AUTHORIZED_TO_PIN,
+  LENGTH_VALIDATION_ERROR,
 } from "../../../src/constants";
 import {
   beforeAll,
@@ -54,7 +55,7 @@ describe("resolvers -> Mutation -> togglePostPin", () => {
   it(`throws NotFoundError if current user with _id === context.userId does not exist`, async () => {
     const { requestContext } = await import("../../../src/libraries");
     vi.spyOn(requestContext, "translate").mockImplementationOnce(
-      (message) => `Translated ${message}`
+      (message) => `Translated ${message}`,
     );
 
     try {
@@ -73,7 +74,7 @@ describe("resolvers -> Mutation -> togglePostPin", () => {
       await togglePostPinResolver?.({}, args, context);
     } catch (error: any) {
       expect(error.message).toEqual(
-        `Translated ${USER_NOT_FOUND_ERROR.MESSAGE}`
+        `Translated ${USER_NOT_FOUND_ERROR.MESSAGE}`,
       );
     }
   });
@@ -81,7 +82,7 @@ describe("resolvers -> Mutation -> togglePostPin", () => {
   it(`throws NotFoundError if no post exists with _id === args.id`, async () => {
     const { requestContext } = await import("../../../src/libraries");
     vi.spyOn(requestContext, "translate").mockImplementationOnce(
-      (message) => `Translated ${message}`
+      (message) => `Translated ${message}`,
     );
 
     try {
@@ -100,7 +101,7 @@ describe("resolvers -> Mutation -> togglePostPin", () => {
       await togglePostPinResolver?.({}, args, context);
     } catch (error: any) {
       expect(error.message).toEqual(
-        `Translated ${POST_NOT_FOUND_ERROR.MESSAGE}`
+        `Translated ${POST_NOT_FOUND_ERROR.MESSAGE}`,
       );
     }
   });
@@ -127,7 +128,7 @@ describe("resolvers -> Mutation -> togglePostPin", () => {
     } catch (error: any) {
       expect(spy).toBeCalledWith(USER_NOT_AUTHORIZED_TO_PIN.MESSAGE);
       expect(error.message).toEqual(
-        `Translated ${USER_NOT_AUTHORIZED_TO_PIN.MESSAGE}`
+        `Translated ${USER_NOT_AUTHORIZED_TO_PIN.MESSAGE}`,
       );
     }
   });
@@ -135,10 +136,11 @@ describe("resolvers -> Mutation -> togglePostPin", () => {
   it(`adds a post to the pinnedPosts for an org`, async () => {
     const { requestContext } = await import("../../../src/libraries");
     vi.spyOn(requestContext, "translate").mockImplementationOnce(
-      (message) => `Translated ${message}`
+      (message) => `Translated ${message}`,
     );
     const args: MutationTogglePostPinArgs = {
       id: testPost?._id,
+      title: "Test title",
     };
 
     const context = {
@@ -158,7 +160,7 @@ describe("resolvers -> Mutation -> togglePostPin", () => {
     }).lean();
 
     const currentPostIsPinned = organization?.pinnedPosts.some((p) =>
-      p.equals(args.id)
+      p.equals(args.id),
     );
 
     expect(currentPostIsPinned).toBeTruthy();
@@ -168,7 +170,7 @@ describe("resolvers -> Mutation -> togglePostPin", () => {
   it(`removes a post from the pinnedPosts for an org`, async () => {
     const { requestContext } = await import("../../../src/libraries");
     vi.spyOn(requestContext, "translate").mockImplementationOnce(
-      (message) => `Translated ${message}`
+      (message) => `Translated ${message}`,
     );
 
     const args: MutationTogglePostPinArgs = {
@@ -193,10 +195,62 @@ describe("resolvers -> Mutation -> togglePostPin", () => {
     }).lean();
 
     const currentPostIsPinned = organization?.pinnedPosts.some((p) =>
-      p.equals(args.id)
+      p.equals(args.id),
     );
 
     expect(currentPostIsPinned).toBeFalsy();
     expect(updatedPost?.pinned).toBeFalsy();
+  });
+
+  it("throws error if title is not provided to pin post", async () => {
+    const { requestContext } = await import("../../../src/libraries");
+    vi.spyOn(requestContext, "translate").mockImplementationOnce(
+      (message) => message,
+    );
+    try {
+      const args: MutationTogglePostPinArgs = {
+        id: testPost?._id,
+      };
+
+      const context = {
+        userId: testUser?._id,
+      };
+
+      const { togglePostPin: togglePostPinResolver } = await import(
+        "../../../src/resolvers/Mutation/togglePostPin"
+      );
+
+      await togglePostPinResolver?.({}, args, context);
+    } catch (error: any) {
+      expect(error.message).toEqual(`Please provide a title to pin post`);
+    }
+  });
+
+  it(`throws String Length Validation error if title is greater than 256 characters`, async () => {
+    const { requestContext } = await import("../../../src/libraries");
+    vi.spyOn(requestContext, "translate").mockImplementationOnce(
+      (message) => message,
+    );
+    try {
+      const args: MutationTogglePostPinArgs = {
+        id: testPost?._id,
+        title:
+          "AfGtN9o7IJXH9Xr5P4CcKTWMVWKOOHTldleLrWfZcThgoX5scPE5o0jARvtVA8VhneyxXquyhWb5nluW2jtP0Ry1zIOUFYfJ6BUXvpo4vCw4GVleGBnoKwkFLp5oW9L8OsEIrjVtYBwaOtXZrkTEBySZ1prr0vFcmrSoCqrCTaChNOxL3tDoHK6h44ChFvgmoVYMSq3IzJohKtbBn68D9NfEVMEtoimkGarUnVBAOsGkKv0mIBJaCl2pnR8Xwq1cG1",
+      };
+
+      const context = {
+        userId: testUser?._id,
+      };
+
+      const { togglePostPin: togglePostPinResolver } = await import(
+        "../../../src/resolvers/Mutation/togglePostPin"
+      );
+
+      await togglePostPinResolver?.({}, args, context);
+    } catch (error: any) {
+      expect(error.message).toEqual(
+        `${LENGTH_VALIDATION_ERROR.MESSAGE} 256 characters in title`,
+      );
+    }
   });
 });

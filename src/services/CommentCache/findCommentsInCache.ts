@@ -4,7 +4,7 @@ import { Types } from "mongoose";
 import { logger } from "../../libraries";
 
 export async function findCommentsInCache(
-  ids: string[]
+  ids: string[],
 ): Promise<(InterfaceComment | null)[]> {
   if (ids.length === 0) {
     return [null];
@@ -37,7 +37,9 @@ export async function findCommentsInCache(
 
         createdAt: new Date(commentObj.createdAt),
 
-        creator: Types.ObjectId(commentObj.creator),
+        creatorId: Types.ObjectId(commentObj.creatorId),
+
+        updatedAt: new Date(commentObj.updatedAt),
 
         postId: Types.ObjectId(commentObj.postId),
 

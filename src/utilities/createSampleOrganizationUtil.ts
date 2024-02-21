@@ -5,9 +5,11 @@ import { faker } from "@faker-js/faker";
 import type mongoose from "mongoose";
 import { SampleData } from "../models/SampleData";
 
+/* eslint-disable */
+
 export const generateUserData = async (
   organizationId: string,
-  userType: string
+  userType: string,
 ): Promise<InterfaceUser & mongoose.Document<any, any, InterfaceUser>> => {
   const gender: "male" | "female" = faker.helpers.arrayElement([
     "male",
@@ -27,7 +29,7 @@ export const generateUserData = async (
     firstName: fname,
     lastName: lname,
     email: `${fname.toLowerCase()}${lname.toLowerCase()}@${faker.helpers.arrayElement(
-      ["xyz", "abc", "lmnop"]
+      ["xyz", "abc", "lmnop"],
     )}.com`,
     password: "$2a$12$bSYpay6TRMpTOaAmYPFXku4avwmqfFBtmgg39TabxmtFEiz4plFtW",
     joinedOrganizations: [organizationId],
@@ -48,7 +50,7 @@ export const generateUserData = async (
 };
 
 const createUser = async (
-  generatedUser: InterfaceUser & mongoose.Document<any, any, InterfaceUser>
+  generatedUser: InterfaceUser & mongoose.Document<any, any, InterfaceUser>,
 ): Promise<InterfaceUser & mongoose.Document<any, any, InterfaceUser>> => {
   const savedUser = await generatedUser.save();
   const sampleModel = new SampleData({
@@ -61,7 +63,7 @@ const createUser = async (
 
 export const generateEventData = async (
   users: InterfaceUser[],
-  organizationId: string
+  organizationId: string,
 ): Promise<InterfaceEvent> => {
   const today = new Date();
   const oneWeekFromNow = new Date();
@@ -74,7 +76,7 @@ export const generateEventData = async (
 
   const duration = Math.floor(Math.random() * 7) + 1; // Random duration between 1 and 7 days
   const endDate = new Date(
-    startDate.getTime() + duration * 24 * 60 * 60 * 1000
+    startDate.getTime() + duration * 24 * 60 * 60 * 1000,
   );
 
   const event = new Event({
@@ -98,7 +100,7 @@ export const generateEventData = async (
     ]),
     isPublic: faker.datatype.boolean({ probability: 0.9 }),
     isRegisterable: faker.datatype.boolean(),
-    creator: faker.helpers.arrayElement(users)._id,
+    creatorId: faker.helpers.arrayElement(users)._id,
     admins: [faker.helpers.arrayElement(users)._id],
     organization: organizationId,
     status: "ACTIVE",
@@ -113,11 +115,11 @@ export const generateEventData = async (
 
   await sampleModel.save();
 
-  const creatorId = event.creator.toString();
+  const creatorId = event.creatorId.toString();
   await User.findByIdAndUpdate(
     creatorId,
     { $push: { eventsCreated: event._id } },
-    { new: true }
+    { new: true },
   );
 
   return event;
@@ -125,7 +127,7 @@ export const generateEventData = async (
 
 export const generatePostData = async (
   users: InterfaceUser[],
-  organizationId: string
+  organizationId: string,
 ): Promise<InterfacePost & mongoose.Document<any, any, InterfacePost>> => {
   const post = new Post({
     status: "ACTIVE",
@@ -135,7 +137,7 @@ export const generatePostData = async (
     pinned: false,
     text: faker.lorem.sentence(),
     title: faker.lorem.words(),
-    creator: faker.helpers.arrayElement(users),
+    creatorId: faker.helpers.arrayElement(users),
     organization: organizationId,
     imageUrl: faker.image.url(),
     createdAt: faker.date.recent(),
@@ -156,7 +158,7 @@ export const generatePostData = async (
 const createPosts = async (
   numPosts: number,
   users: InterfaceUser[],
-  organizationId: string
+  organizationId: string,
 ): Promise<(InterfacePost & mongoose.Document<any, any, InterfacePost>)[]> => {
   const posts = [];
   for (let i = 0; i < numPosts; i++) {
@@ -169,7 +171,7 @@ const createPosts = async (
 const createEvents = async (
   numEvents: number,
   users: InterfaceUser[],
-  organizationId: string
+  organizationId: string,
 ): Promise<InterfaceEvent[]> => {
   const events = [];
 
@@ -182,7 +184,7 @@ const createEvents = async (
 
 export const generateRandomPlugins = async (
   numberOfPlugins: number,
-  users: string[]
+  users: string[],
 ): Promise<Promise<any>[]> => {
   const pluginPromises = [];
   for (let i = 0; i < numberOfPlugins; i++) {
@@ -214,13 +216,35 @@ export const createSampleOrganization = async (): Promise<void> => {
   const _id = faker.database.mongodbObjectId();
   const creator = await generateUserData(_id, "ADMIN");
 
+  interface Address {
+    city: string;
+    countryCode: string;
+    dependentLocality: string;
+    line1: string;
+    line2: string;
+    postalCode: string;
+    sortingCode: string;
+    state: string;
+  }
+
+  const address: Address = {
+    city: faker.address.city(),
+    countryCode: faker.address.countryCode(),
+    dependentLocality: faker.address.secondaryAddress(),
+    line1: faker.address.streetAddress(),
+    line2: faker.address.secondaryAddress(),
+    postalCode: faker.address.zipCode(),
+    sortingCode: faker.address.zipCode(),
+    state: faker.address.state(),
+  };
+
   const organization = new Organization({
     _id,
     name: faker.company.name(),
     description: faker.lorem.sentences(),
-    location: `${faker.location.country()}, ${faker.location.city()}`,
-    isPublic: true,
-    creator: creator._id,
+    address,
+    userRegistrationRequired: false,
+    creatorId: creator._id,
     status: "ACTIVE",
     members: [creator._id],
     admins: [creator._id],

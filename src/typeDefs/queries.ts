@@ -7,6 +7,24 @@ export const queries = gql`
   type Query {
     adminPlugin(orgId: ID!): [Plugin]
 
+    actionItem(id: ID!): ActionItem
+
+    actionItemsByEvent(eventId: ID!): [ActionItem]
+
+    actionItemsByOrganization(
+      organizationId: ID!
+      where: ActionItemWhereInput
+      orderBy: ActionItemsOrderByInput
+    ): [ActionItem]
+
+    actionItemCategory(id: ID!): ActionItemCategory
+
+    actionItemCategoriesByOrganization(
+      organizationId: ID!
+    ): [ActionItemCategory]
+
+    agendaCategory(id: ID!): AgendaCategory!
+
     checkAuth: User! @auth
 
     customFieldsByOrganization(id: ID!): [OrganizationCustomField]
@@ -28,7 +46,13 @@ export const queries = gql`
       orderBy: EventOrderByInput
     ): [Event!]!
 
+    eventVolunteersByEvent(id: ID!): [EventVolunteer]
+
     getDonationById(id: ID!): Donation!
+
+    getEventAttendeesByEventId(eventId: ID!): [EventAttendee]
+
+    getEventAttendee(userId: ID!, eventId: ID!): EventAttendee
 
     getDonationByOrgId(orgId: ID!): [Donation]
 

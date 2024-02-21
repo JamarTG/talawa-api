@@ -16,7 +16,6 @@ export const event: QueryResolvers["event"] = async (_parent, args) => {
     status: "ACTIVE",
   })
     .populate("creator", "-password")
-    .populate("tasks")
     .populate("admins", "-password")
     .lean();
 
@@ -24,7 +23,7 @@ export const event: QueryResolvers["event"] = async (_parent, args) => {
     throw new errors.NotFoundError(
       EVENT_NOT_FOUND_ERROR.DESC,
       EVENT_NOT_FOUND_ERROR.CODE,
-      EVENT_NOT_FOUND_ERROR.PARAM
+      EVENT_NOT_FOUND_ERROR.PARAM,
     );
   }
 

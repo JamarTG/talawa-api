@@ -1,4 +1,9 @@
 import type { QueryResolvers } from "../../types/generatedGraphQLTypes";
+import { actionItem } from "./actionItem";
+import { actionItemsByEvent } from "./actionItemsByEvent";
+import { actionItemCategory } from "./actionItemCategory";
+import { actionItemsByOrganization } from "./actionItemsByOrganization";
+import { actionItemCategoriesByOrganization } from "./actionItemCategoriesByOrganization";
 import { checkAuth } from "./checkAuth";
 import { customDataByOrganization } from "./customDataByOrganization";
 import { customFieldsByOrganization } from "./customFieldsByOrganization";
@@ -27,8 +32,15 @@ import { userLanguage } from "./userLanguage";
 import { users } from "./users";
 import { getAdvertisements } from "./getAdvertisements";
 import { usersConnection } from "./usersConnection";
+import { agendaCategory } from "./agendaCategory";
 
 export const Query: QueryResolvers = {
+  actionItem,
+  actionItemsByEvent,
+  actionItemCategory,
+  agendaCategory,
+  actionItemsByOrganization,
+  actionItemCategoriesByOrganization,
   checkAuth,
   customFieldsByOrganization,
   customDataByOrganization,

@@ -41,7 +41,7 @@ beforeAll(async () => {
 
   testComment = await Comment.create({
     text: "text",
-    creator: testUser?._id,
+    creatorId: testUser?._id,
     postId: testPost?._id,
   });
 
@@ -56,7 +56,7 @@ beforeAll(async () => {
     },
     {
       new: true,
-    }
+    },
   );
 });
 
@@ -133,12 +133,12 @@ describe("resolvers -> Mutation -> removeComment", () => {
         },
         {
           $set: {
-            creator: Types.ObjectId().toString(),
+            creatorId: Types.ObjectId().toString(),
           },
         },
         {
           new: true,
-        }
+        },
       );
 
       if (updatedComment !== null) {
@@ -154,7 +154,7 @@ describe("resolvers -> Mutation -> removeComment", () => {
           $pull: {
             adminFor: testPost?.organization,
           },
-        }
+        },
       );
 
       const args: MutationRemoveCommentArgs = {
@@ -184,12 +184,12 @@ describe("resolvers -> Mutation -> removeComment", () => {
       },
       {
         $set: {
-          creator: testUser!._id,
+          creatorId: testUser!._id,
         },
       },
       {
         new: true,
-      }
+      },
     );
 
     if (updatedComment !== null) {
@@ -205,7 +205,7 @@ describe("resolvers -> Mutation -> removeComment", () => {
         $push: {
           adminFor: testPost?.organization,
         },
-      }
+      },
     );
 
     const args: MutationRemoveCommentArgs = {
@@ -219,7 +219,7 @@ describe("resolvers -> Mutation -> removeComment", () => {
     const removeCommentPayload = await removeCommentResolver?.(
       {},
       args,
-      context
+      context,
     );
 
     const testUpdatedPost = await Post.findOne({
@@ -230,7 +230,10 @@ describe("resolvers -> Mutation -> removeComment", () => {
 
     const commentExists = await Comment.exists({ _id: testComment?._id });
 
-    expect(removeCommentPayload).toEqual(testComment?.toObject());
+    expect(removeCommentPayload).toEqual({
+      ...testComment?.toObject(),
+      updatedAt: expect.anything(),
+    });
     expect(commentExists).toBeFalsy();
     expect(testUpdatedPost?.commentCount).toEqual(0);
   });

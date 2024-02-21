@@ -6,6 +6,8 @@ import {
   USER_NOT_AUTHORIZED_ERROR,
   POST_NOT_FOUND_ERROR,
   LENGTH_VALIDATION_ERROR,
+  POST_NEEDS_TO_BE_PINNED,
+  PLEASE_PROVIDE_TITLE,
 } from "../../constants";
 import { isValidString } from "../../libraries/validators/validateString";
 import { findPostsInCache } from "../../services/PostCache/findPostsInCache";
@@ -16,7 +18,7 @@ import { uploadEncodedVideo } from "../../utilities/encodedVideoStorage/uploadEn
 export const updatePost: MutationResolvers["updatePost"] = async (
   _parent,
   args,
-  context
+  context,
 ) => {
   let post: InterfacePost | null;
 
@@ -38,32 +40,45 @@ export const updatePost: MutationResolvers["updatePost"] = async (
     throw new errors.NotFoundError(
       requestContext.translate(POST_NOT_FOUND_ERROR.MESSAGE),
       POST_NOT_FOUND_ERROR.CODE,
-      POST_NOT_FOUND_ERROR.PARAM
+      POST_NOT_FOUND_ERROR.PARAM,
     );
   }
 
-  const currentUserIsPostCreator = post.creator.equals(context.userId);
+  const currentUserIsPostCreator = post.creatorId.equals(context.userId);
 
   // checks if current user is an creator of the post with _id === args.id
   if (currentUserIsPostCreator === false) {
     throw new errors.UnauthorizedError(
       requestContext.translate(USER_NOT_AUTHORIZED_ERROR.MESSAGE),
       USER_NOT_AUTHORIZED_ERROR.CODE,
-      USER_NOT_AUTHORIZED_ERROR.PARAM
+      USER_NOT_AUTHORIZED_ERROR.PARAM,
     );
   }
 
   if (args.data?.imageUrl && args.data?.imageUrl !== null) {
     args.data.imageUrl = await uploadEncodedImage(
       args.data.imageUrl,
-      post.imageUrl
+      post.imageUrl,
     );
   }
 
   if (args.data?.videoUrl && args.data?.videoUrl !== null) {
     args.data.videoUrl = await uploadEncodedVideo(
       args.data.videoUrl,
-      post.videoUrl
+      post.videoUrl,
+    );
+  }
+
+  // Check title and pinpost
+  if (args.data?.title && !post.pinned) {
+    throw new errors.InputValidationError(
+      requestContext.translate(POST_NEEDS_TO_BE_PINNED.MESSAGE),
+      POST_NEEDS_TO_BE_PINNED.CODE,
+    );
+  } else if (!args.data?.title && post.pinned) {
+    throw new errors.InputValidationError(
+      requestContext.translate(PLEASE_PROVIDE_TITLE.MESSAGE),
+      PLEASE_PROVIDE_TITLE.CODE,
     );
   }
 
@@ -73,17 +88,17 @@ export const updatePost: MutationResolvers["updatePost"] = async (
   if (!validationResultTitle.isLessThanMaxLength) {
     throw new errors.InputValidationError(
       requestContext.translate(
-        `${LENGTH_VALIDATION_ERROR.MESSAGE} 256 characters in title`
+        `${LENGTH_VALIDATION_ERROR.MESSAGE} 256 characters in title`,
       ),
-      LENGTH_VALIDATION_ERROR.CODE
+      LENGTH_VALIDATION_ERROR.CODE,
     );
   }
   if (!validationResultText.isLessThanMaxLength) {
     throw new errors.InputValidationError(
       requestContext.translate(
-        `${LENGTH_VALIDATION_ERROR.MESSAGE} 500 characters in information`
+        `${LENGTH_VALIDATION_ERROR.MESSAGE} 500 characters in information`,
       ),
-      LENGTH_VALIDATION_ERROR.CODE
+      LENGTH_VALIDATION_ERROR.CODE,
     );
   }
 
@@ -96,7 +111,7 @@ export const updatePost: MutationResolvers["updatePost"] = async (
     },
     {
       new: true,
-    }
+    },
   ).lean();
 
   if (updatedPost !== null) {

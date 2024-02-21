@@ -129,7 +129,7 @@ describe("resolvers -> Mutation -> removeAdmin", () => {
         },
         {
           new: true,
-        }
+        },
       );
 
       if (updatedOrganization !== null) {
@@ -155,7 +155,7 @@ describe("resolvers -> Mutation -> removeAdmin", () => {
     } catch (error: any) {
       expect(spy).toHaveBeenLastCalledWith(USER_NOT_ORGANIZATION_ADMIN.MESSAGE);
       expect(error.message).toEqual(
-        `Translated ${USER_NOT_ORGANIZATION_ADMIN.MESSAGE}`
+        `Translated ${USER_NOT_ORGANIZATION_ADMIN.MESSAGE}`,
       );
     }
   });
@@ -176,12 +176,12 @@ describe("resolvers -> Mutation -> removeAdmin", () => {
             admins: testUserRemoved?._id,
           },
           $set: {
-            creator: Types.ObjectId().toString(),
+            creatorId: Types.ObjectId().toString(),
           },
         },
         {
           new: true,
-        }
+        },
       );
 
       if (updatedOrganization !== null) {
@@ -206,10 +206,10 @@ describe("resolvers -> Mutation -> removeAdmin", () => {
       await removeAdminAdminError?.({}, args, context);
     } catch (error: any) {
       expect(spy).toHaveBeenLastCalledWith(
-        USER_NOT_AUTHORIZED_SUPERADMIN.MESSAGE
+        USER_NOT_AUTHORIZED_SUPERADMIN.MESSAGE,
       );
       expect(error.message).toEqual(
-        `Translated ${USER_NOT_AUTHORIZED_SUPERADMIN.MESSAGE}`
+        `Translated ${USER_NOT_AUTHORIZED_SUPERADMIN.MESSAGE}`,
       );
     }
   });
@@ -222,9 +222,9 @@ describe("resolvers -> Mutation -> removeAdmin", () => {
       },
       {
         $set: {
-          creator: testUserRemover?._id,
+          creatorId: testUserRemover?._id,
         },
-      }
+      },
     );
 
     await User.updateOne(
@@ -236,7 +236,7 @@ describe("resolvers -> Mutation -> removeAdmin", () => {
           adminApproved: true,
           userType: "SUPERADMIN",
         },
-      }
+      },
     );
 
     const args: MutationRemoveAdminArgs = {

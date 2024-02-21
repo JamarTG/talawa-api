@@ -15,7 +15,9 @@ on:
     paths:
       - '.github/**'
       - '.husky/**'
+      - 'scripts/**'      
       - '.env.sample'
+      - '.node-version'
       - 'tsconfig.json'
       - '.gitignore'
       - '.eslintrc.json'
@@ -23,6 +25,10 @@ on:
       - 'vite.config.ts'
       - 'CODEOWNERS'
       - 'LICENSE'
+      - 'docker-compose.yaml'
+      - 'Dockerfile'
+      - 'setup.ts'
+      - 'schema.graphql'
       
 jobs:
   Checking-for-unauthorized-file-changes:

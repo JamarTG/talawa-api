@@ -28,7 +28,7 @@ import { deletePreviousVideo as deleteVideo } from "../../utilities/encodedVideo
 export const removePost: MutationResolvers["removePost"] = async (
   _parent,
   args,
-  context
+  context,
 ) => {
   // Get the currentUser with _id === context.userId exists.
   const currentUser = await User.findOne({
@@ -40,7 +40,7 @@ export const removePost: MutationResolvers["removePost"] = async (
     throw new errors.NotFoundError(
       requestContext.translate(USER_NOT_FOUND_ERROR.MESSAGE),
       USER_NOT_FOUND_ERROR.CODE,
-      USER_NOT_FOUND_ERROR.PARAM
+      USER_NOT_FOUND_ERROR.PARAM,
     );
   }
 
@@ -64,22 +64,22 @@ export const removePost: MutationResolvers["removePost"] = async (
     throw new errors.NotFoundError(
       requestContext.translate(POST_NOT_FOUND_ERROR.MESSAGE),
       POST_NOT_FOUND_ERROR.CODE,
-      POST_NOT_FOUND_ERROR.PARAM
+      POST_NOT_FOUND_ERROR.PARAM,
     );
   }
 
   // Checks whether currentUser is allowed to delete the post or not.
-  const isCreator = post.creator.equals(context.userId);
+  const isCreator = post.creatorId.equals(context.userId);
   const isSuperAdmin = currentUser?.userType === "SUPERADMIN";
   const isAdminOfPostOrganization = currentUser?.adminFor.some((orgID) =>
-    orgID.equals(post?.organization)
+    orgID.equals(post?.organization),
   );
 
   if (!isCreator && !isSuperAdmin && !isAdminOfPostOrganization) {
     throw new errors.UnauthorizedError(
       requestContext.translate(USER_NOT_AUTHORIZED_ERROR.MESSAGE),
       USER_NOT_AUTHORIZED_ERROR.CODE,
-      USER_NOT_AUTHORIZED_ERROR.PARAM
+      USER_NOT_AUTHORIZED_ERROR.PARAM,
     );
   }
 
@@ -112,7 +112,7 @@ export const removePost: MutationResolvers["removePost"] = async (
     },
     {
       new: true,
-    }
+    },
   ).lean();
 
   if (updatedOrganization !== null) {

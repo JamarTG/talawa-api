@@ -35,13 +35,13 @@ afterAll(async () => {
   await disconnect(MONGOOSE_INSTANCE);
 });
 
-describe("resolvers -> Organization -> creator", () => {
+describe("resolvers -> Organization -> creatorId", () => {
   afterEach(() => {
     vi.doUnmock("../../../src/constants");
     vi.resetModules();
   });
 
-  it(`throws NotFoundError if no user exists with _id === parent.creator`, async () => {
+  it(`throws NotFoundError if no user exists with _id === parent.creatorId`, async () => {
     const { requestContext } = await import("../../../src/libraries");
     const spy = vi
       .spyOn(requestContext, "translate")
@@ -54,12 +54,12 @@ describe("resolvers -> Organization -> creator", () => {
         },
         {
           $set: {
-            creator: Types.ObjectId().toString(),
+            creatorId: Types.ObjectId().toString(),
           },
         },
         {
           new: true,
-        }
+        },
       );
 
       const parent = testOrganization?.toObject();
@@ -73,24 +73,24 @@ describe("resolvers -> Organization -> creator", () => {
     } catch (error: any) {
       expect(spy).toHaveBeenCalledWith(USER_NOT_FOUND_ERROR.MESSAGE);
       expect(error.message).toEqual(
-        `Translated ${USER_NOT_FOUND_ERROR.MESSAGE}`
+        `Translated ${USER_NOT_FOUND_ERROR.MESSAGE}`,
       );
     }
   });
 
-  it(`returns user object for parent.creator`, async () => {
+  it(`returns user object for parent.creatorId`, async () => {
     testOrganization = await Organization.findOneAndUpdate(
       {
         _id: testOrganization?._id,
       },
       {
         $set: {
-          creator: testUser?._id,
+          creatorId: testUser?._id,
         },
       },
       {
         new: true,
-      }
+      },
     );
 
     const parent = testOrganization?.toObject();
@@ -101,7 +101,7 @@ describe("resolvers -> Organization -> creator", () => {
     if (parent) {
       const creatorPayload = await creatorResolver?.(parent, {}, {});
       const creator = await User.findOne({
-        _id: testOrganization?.creator,
+        _id: testOrganization?.creatorId,
       }).lean();
 
       expect(creatorPayload).toEqual(creator);

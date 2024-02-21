@@ -6,6 +6,8 @@ import {
   Post,
   Comment,
   MembershipRequest,
+  ActionItemCategory,
+  ActionItem,
 } from "../../models";
 import { superAdminCheck } from "../../utilities";
 import {
@@ -38,7 +40,7 @@ export const removeOrganization: MutationResolvers["removeOrganization"] =
       throw new errors.NotFoundError(
         requestContext.translate(USER_NOT_FOUND_ERROR.MESSAGE),
         USER_NOT_FOUND_ERROR.CODE,
-        USER_NOT_FOUND_ERROR.PARAM
+        USER_NOT_FOUND_ERROR.PARAM,
       );
     }
 
@@ -61,7 +63,7 @@ export const removeOrganization: MutationResolvers["removeOrganization"] =
       throw new errors.NotFoundError(
         requestContext.translate(ORGANIZATION_NOT_FOUND_ERROR.MESSAGE),
         ORGANIZATION_NOT_FOUND_ERROR.CODE,
-        ORGANIZATION_NOT_FOUND_ERROR.PARAM
+        ORGANIZATION_NOT_FOUND_ERROR.PARAM,
       );
     }
     // Checks whether currentUser is a SUPERADMIN
@@ -80,19 +82,19 @@ export const removeOrganization: MutationResolvers["removeOrganization"] =
         $pull: {
           createdOrganizations: organization._id,
         },
-      }
+      },
     );
 
     // Remove organization._id from each member's joinedOrganizations field for organization.members list.
     await User.updateMany(
       { _id: { $in: organization.members } },
-      { $pull: { joinedOrganizations: organization._id } }
+      { $pull: { joinedOrganizations: organization._id } },
     );
 
     // Remove organization._id from each admin's joinedOrganizations field for organization.admins list.
     await User.updateMany(
       { _id: { $in: organization.admins } },
-      { $pull: { joinedOrganizations: organization._id } }
+      { $pull: { joinedOrganizations: organization._id } },
     );
 
     /*
@@ -113,7 +115,7 @@ export const removeOrganization: MutationResolvers["removeOrganization"] =
         $pull: {
           membershipRequests: { $in: organization.membershipRequests },
         },
-      }
+      },
     );
 
     /* 
@@ -122,8 +124,26 @@ export const removeOrganization: MutationResolvers["removeOrganization"] =
     */
     await User.updateMany(
       { _id: { $in: organization.blockedUsers } },
-      { $pull: { organizationsBlockedBy: organization._id } }
+      { $pull: { organizationsBlockedBy: organization._id } },
     );
+
+    // Get the ids of all ActionItemCategories associated with the organization
+    const actionItemCategories = await ActionItemCategory.find({
+      organizationId: organization?._id,
+    });
+    const actionItemCategoriesIds = actionItemCategories.map(
+      (category) => category._id,
+    );
+
+    // Remove all ActionItemCategory documents whose id is in the actionItemCategories array
+    await ActionItemCategory.deleteMany({
+      _id: { $in: actionItemCategoriesIds },
+    });
+
+    // Remove all ActionItem documents whose actionItemCategory is in the actionItemCategories array
+    await ActionItem.deleteMany({
+      actionItemCategoryId: { $in: actionItemCategoriesIds },
+    });
 
     // Deletes the organzation.
     await Organization.deleteOne({

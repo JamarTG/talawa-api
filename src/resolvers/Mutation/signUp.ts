@@ -34,7 +34,7 @@ export const signUp: MutationResolvers["signUp"] = async (_parent, args) => {
     throw new errors.ConflictError(
       requestContext.translate(EMAIL_ALREADY_EXISTS_ERROR.MESSAGE),
       EMAIL_ALREADY_EXISTS_ERROR.CODE,
-      EMAIL_ALREADY_EXISTS_ERROR.PARAM
+      EMAIL_ALREADY_EXISTS_ERROR.PARAM,
     );
   }
 
@@ -59,7 +59,7 @@ export const signUp: MutationResolvers["signUp"] = async (_parent, args) => {
       throw new errors.NotFoundError(
         requestContext.translate(ORGANIZATION_NOT_FOUND_ERROR.MESSAGE),
         ORGANIZATION_NOT_FOUND_ERROR.CODE,
-        ORGANIZATION_NOT_FOUND_ERROR.PARAM
+        ORGANIZATION_NOT_FOUND_ERROR.PARAM,
       );
     }
   }
@@ -122,7 +122,6 @@ export const signUp: MutationResolvers["signUp"] = async (_parent, args) => {
 
   const createdUser = await User.create({
     ...args.data,
-    organizationUserBelongsTo: organization ? organization._id : null,
     email: args.data.email.toLowerCase(), // ensure all emails are stored as lowercase to prevent duplicated due to comparison errors
     image: uploadImageFileName ? uploadImageFileName : null,
     password: hashedPassword,

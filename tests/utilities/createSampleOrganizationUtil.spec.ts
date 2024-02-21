@@ -87,11 +87,11 @@ describe("generateUserData function", () => {
     expect(event.startTime).toEqual(expect.any(Date));
     expect(event.endTime).toEqual(expect.any(Date));
     expect(event.recurrance).toEqual(
-      expect.stringMatching(/^(ONCE|DAILY|WEEKLY|MONTHLY|YEARLY)$/)
+      expect.stringMatching(/^(ONCE|DAILY|WEEKLY|MONTHLY|YEARLY)$/),
     );
     expect(event.isPublic).toEqual(expect.any(Boolean));
     expect(event.isRegisterable).toEqual(expect.any(Boolean));
-    expect(event.creator.toString()).toEqual(expect.any(String));
+    expect(event.creatorId.toString()).toEqual(expect.any(String));
     expect(event.admins).toEqual(expect.any(Array));
     expect(event.organization.toString()).toEqual(expect.any(String));
     expect(event.status).toEqual(expect.any(String));
@@ -115,7 +115,7 @@ describe("generatePostData function", () => {
     expect(post.pinned).toEqual(false);
     expect(post.text).toEqual(expect.any(String));
     expect(post.title).toEqual(expect.any(String));
-    expect(post.creator).toEqual(expect.any(Object));
+    expect(post.creatorId).toEqual(expect.any(Object));
     expect(post.organization).toEqual(expect.any(Object));
     expect(post.imageUrl).toEqual(expect.any(String));
     expect(post.createdAt).toEqual(expect.any(Date));
@@ -130,7 +130,7 @@ describe("generatePostData function", () => {
 
       const pluginPromises = await generateRandomPlugins(
         numberOfPlugins,
-        users.map((user) => user._id.toString())
+        users.map((user) => user._id.toString()),
       );
 
       expect(Array.isArray(pluginPromises)).toBe(true);

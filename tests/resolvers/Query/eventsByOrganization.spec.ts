@@ -9,7 +9,6 @@ import type {
 } from "../../helpers/userAndOrg";
 import { createTestUserAndOrganization } from "../../helpers/userAndOrg";
 import { createEventWithRegistrant } from "../../helpers/events";
-import { createTestTask } from "../../helpers/task";
 import type mongoose from "mongoose";
 
 let MONGOOSE_INSTANCE: typeof mongoose;
@@ -23,17 +22,14 @@ beforeAll(async () => {
     testUser?._id,
     testOrganization?._id,
     true,
-    "ONCE"
+    "ONCE",
   );
   const testEvent2 = await createEventWithRegistrant(
     testUser?._id,
     testOrganization?._id,
     true,
-    "ONCE"
+    "ONCE",
   );
-
-  const testEvents = [testEvent1, testEvent2];
-  await createTestTask(testEvents[0]?._id, testUser?._id);
 });
 
 afterAll(async () => {
@@ -57,7 +53,7 @@ describe("resolvers -> Query -> eventsByOrganization", () => {
     const eventsByOrganizationPayload = await eventsByOrganization?.(
       {},
       args,
-      {}
+      {},
     );
 
     const eventsByOrganizationInfo = await Event.find({
@@ -66,7 +62,6 @@ describe("resolvers -> Query -> eventsByOrganization", () => {
     })
       .sort(sort)
       .populate("creator", "-password")
-      .populate("tasks")
       .populate("admins", "-password")
       .lean();
 

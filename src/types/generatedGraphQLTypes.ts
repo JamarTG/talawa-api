@@ -1,4 +1,7 @@
 import type { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import type { InterfaceActionItem as InterfaceActionItemModel } from '../models/ActionItem';
+import type { InterfaceActionItemCategory as InterfaceActionItemCategoryModel } from '../models/ActionItemCategory';
+import type { InterfaceAgendaCategory as InterfaceAgendaCategoryModel } from '../models/AgendaCategory';
 import type { InterfaceCheckIn as InterfaceCheckInModel } from '../models/CheckIn';
 import type { InterfaceMessageChat as InterfaceMessageChatModel } from '../models/MessageChat';
 import type { InterfaceComment as InterfaceCommentModel } from '../models/Comment';
@@ -7,8 +10,10 @@ import type { InterfaceDirectChatMessage as InterfaceDirectChatMessageModel } fr
 import type { InterfaceDonation as InterfaceDonationModel } from '../models/Donation';
 import type { InterfaceEvent as InterfaceEventModel } from '../models/Event';
 import type { InterfaceEventAttendee as InterfaceEventAttendeeModel } from '../models/EventAttendee';
-import type { InterfaceEventProject as InterfaceEventProjectModel } from '../models/EventProject';
+import type { InterfaceUserFamily as InterfaceUserFamilyModel } from '../models/userFamily';
+import type { InterfaceEventVolunteer as InterfaceEventVolunteerModel } from '../models/EventVolunteer';
 import type { InterfaceFeedback as InterfaceFeedbackModel } from '../models/Feedback';
+import type { InterfaceFund as InterfaceFundModel } from '../models/Fund';
 import type { InterfaceGroup as InterfaceGroupModel } from '../models/Group';
 import type { InterfaceGroupChat as InterfaceGroupChatModel } from '../models/GroupChat';
 import type { InterfaceGroupChatMessage as InterfaceGroupChatMessageModel } from '../models/GroupChatMessage';
@@ -19,7 +24,6 @@ import type { InterfaceOrganization as InterfaceOrganizationModel } from '../mod
 import type { InterfacePlugin as InterfacePluginModel } from '../models/Plugin';
 import type { InterfacePluginField as InterfacePluginFieldModel } from '../models/PluginField';
 import type { InterfacePost as InterfacePostModel } from '../models/Post';
-import type { InterfaceTask as InterfaceTaskModel } from '../models/Task';
 import type { InterfaceOrganizationTagUser as InterfaceOrganizationTagUserModel } from '../models/OrganizationTagUser';
 import type { InterfaceUser as InterfaceUserModel } from '../models/User';
 export type Maybe<T> = T | null;
@@ -27,191 +31,435 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  Any: any;
-  CountryCode: any;
-  Date: any;
-  DateTime: any;
-  EmailAddress: any;
-  JSON: any;
-  Latitude: any;
-  Longitude: any;
-  PhoneNumber: any;
-  PositiveInt: any;
-  Time: any;
-  URL: any;
-  Upload: any;
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  Any: { input: any; output: any; }
+  CountryCode: { input: any; output: any; }
+  Date: { input: any; output: any; }
+  DateTime: { input: any; output: any; }
+  EmailAddress: { input: any; output: any; }
+  JSON: { input: any; output: any; }
+  Latitude: { input: any; output: any; }
+  Longitude: { input: any; output: any; }
+  PhoneNumber: { input: any; output: any; }
+  PositiveInt: { input: any; output: any; }
+  Time: { input: any; output: any; }
+  URL: { input: any; output: any; }
+  Upload: { input: any; output: any; }
 };
+
+export type ActionItem = {
+  __typename?: 'ActionItem';
+  _id: Scalars['ID']['output'];
+  actionItemCategory?: Maybe<ActionItemCategory>;
+  assignee?: Maybe<User>;
+  assigner?: Maybe<User>;
+  assignmentDate: Scalars['Date']['output'];
+  completionDate: Scalars['Date']['output'];
+  createdAt: Scalars['Date']['output'];
+  creator?: Maybe<User>;
+  dueDate: Scalars['Date']['output'];
+  event?: Maybe<Event>;
+  isCompleted: Scalars['Boolean']['output'];
+  postCompletionNotes?: Maybe<Scalars['String']['output']>;
+  preCompletionNotes?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['Date']['output'];
+};
+
+export type ActionItemCategory = {
+  __typename?: 'ActionItemCategory';
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['Date']['output'];
+  creator?: Maybe<User>;
+  isDisabled: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  organization?: Maybe<Organization>;
+  updatedAt: Scalars['Date']['output'];
+};
+
+export type ActionItemWhereInput = {
+  actionItemCategory_id?: InputMaybe<Scalars['ID']['input']>;
+  event_id?: InputMaybe<Scalars['ID']['input']>;
+  is_active?: InputMaybe<Scalars['Boolean']['input']>;
+  is_completed?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type ActionItemsOrderByInput =
+  | 'createdAt_ASC'
+  | 'createdAt_DESC';
 
 export type Address = {
   __typename?: 'Address';
-  city?: Maybe<Scalars['String']>;
-  countryCode?: Maybe<Scalars['CountryCode']>;
-  dependentLocality?: Maybe<Scalars['String']>;
-  line1?: Maybe<Scalars['String']>;
-  line2?: Maybe<Scalars['String']>;
-  postalCode?: Maybe<Scalars['String']>;
-  sortingCode?: Maybe<Scalars['String']>;
-  state?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']['output']>;
+  countryCode?: Maybe<Scalars['String']['output']>;
+  dependentLocality?: Maybe<Scalars['String']['output']>;
+  line1?: Maybe<Scalars['String']['output']>;
+  line2?: Maybe<Scalars['String']['output']>;
+  postalCode?: Maybe<Scalars['String']['output']>;
+  sortingCode?: Maybe<Scalars['String']['output']>;
+  state?: Maybe<Scalars['String']['output']>;
 };
 
 export type AddressInput = {
-  city?: InputMaybe<Scalars['String']>;
-  countryCode?: InputMaybe<Scalars['CountryCode']>;
-  dependentLocality?: InputMaybe<Scalars['String']>;
-  line1?: InputMaybe<Scalars['String']>;
-  line2?: InputMaybe<Scalars['String']>;
-  postalCode?: InputMaybe<Scalars['String']>;
-  sortingCode?: InputMaybe<Scalars['String']>;
-  state?: InputMaybe<Scalars['String']>;
+  city?: InputMaybe<Scalars['String']['input']>;
+  countryCode?: InputMaybe<Scalars['String']['input']>;
+  dependentLocality?: InputMaybe<Scalars['String']['input']>;
+  line1?: InputMaybe<Scalars['String']['input']>;
+  line2?: InputMaybe<Scalars['String']['input']>;
+  postalCode?: InputMaybe<Scalars['String']['input']>;
+  sortingCode?: InputMaybe<Scalars['String']['input']>;
+  state?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Advertisement = {
   __typename?: 'Advertisement';
-  _id?: Maybe<Scalars['ID']>;
-  endDate: Scalars['Date'];
-  link: Scalars['String'];
-  name: Scalars['String'];
-  orgId?: Maybe<Scalars['ID']>;
-  startDate: Scalars['Date'];
-  type: Scalars['String'];
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  creator?: Maybe<User>;
+  endDate: Scalars['Date']['output'];
+  link: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  orgId: Scalars['ID']['output'];
+  startDate: Scalars['Date']['output'];
+  type: AdvertisementType;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type AdvertisementType =
+  | 'BANNER'
+  | 'MENU'
+  | 'POPUP';
+
+export type AgendaCategory = {
+  __typename?: 'AgendaCategory';
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['Date']['output'];
+  createdBy: User;
+  description?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  organization: Organization;
+  updatedAt?: Maybe<Scalars['Date']['output']>;
+  updatedBy?: Maybe<User>;
 };
 
 export type AggregatePost = {
   __typename?: 'AggregatePost';
-  count: Scalars['Int'];
+  count: Scalars['Int']['output'];
 };
 
 export type AggregateUser = {
   __typename?: 'AggregateUser';
-  count: Scalars['Int'];
+  count: Scalars['Int']['output'];
 };
 
 export type AuthData = {
   __typename?: 'AuthData';
-  accessToken: Scalars['String'];
-  refreshToken: Scalars['String'];
+  accessToken: Scalars['String']['output'];
+  refreshToken: Scalars['String']['output'];
   user: User;
 };
 
 export type CheckIn = {
   __typename?: 'CheckIn';
-  _id: Scalars['ID'];
-  allotedRoom?: Maybe<Scalars['String']>;
-  allotedSeat?: Maybe<Scalars['String']>;
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
   event: Event;
-  feedbackSubmitted: Scalars['Boolean'];
-  time: Scalars['DateTime'];
+  feedbackSubmitted: Scalars['Boolean']['output'];
+  time: Scalars['DateTime']['output'];
+  updatedAt: Scalars['DateTime']['output'];
   user: User;
 };
 
 export type CheckInInput = {
-  allotedRoom?: InputMaybe<Scalars['String']>;
-  allotedSeat?: InputMaybe<Scalars['String']>;
-  eventId: Scalars['ID'];
-  userId: Scalars['ID'];
+  eventId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 export type CheckInStatus = {
   __typename?: 'CheckInStatus';
-  _id: Scalars['ID'];
+  _id: Scalars['ID']['output'];
   checkIn?: Maybe<CheckIn>;
   user: User;
 };
 
 export type Comment = {
   __typename?: 'Comment';
-  _id?: Maybe<Scalars['ID']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  creator: User;
-  likeCount?: Maybe<Scalars['Int']>;
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  creator?: Maybe<User>;
+  likeCount?: Maybe<Scalars['Int']['output']>;
   likedBy?: Maybe<Array<Maybe<User>>>;
   post: Post;
-  text: Scalars['String'];
+  text: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type CommentInput = {
-  text: Scalars['String'];
+  text: Scalars['String']['input'];
 };
 
 export type ConnectionError = InvalidCursor | MaximumValueError;
 
 export type ConnectionPageInfo = {
   __typename?: 'ConnectionPageInfo';
-  endCursor?: Maybe<Scalars['String']>;
-  hasNextPage: Scalars['Boolean'];
-  hasPreviousPage: Scalars['Boolean'];
-  startCursor?: Maybe<Scalars['String']>;
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+export type CreateActionItemInput = {
+  assigneeId: Scalars['ID']['input'];
+  dueDate?: InputMaybe<Scalars['Date']['input']>;
+  eventId?: InputMaybe<Scalars['ID']['input']>;
+  preCompletionNotes?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateAgendaCategoryInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  organizationId: Scalars['ID']['input'];
 };
 
 export type CreateUserTagInput = {
-  name: Scalars['String'];
-  organizationId: Scalars['ID'];
-  parentTagId?: InputMaybe<Scalars['ID']>;
+  name: Scalars['String']['input'];
+  organizationId: Scalars['ID']['input'];
+  parentTagId?: InputMaybe<Scalars['ID']['input']>;
 };
 
+export type Currency =
+  | 'AED'
+  | 'AFN'
+  | 'ALL'
+  | 'AMD'
+  | 'ANG'
+  | 'AOA'
+  | 'ARS'
+  | 'AUD'
+  | 'AWG'
+  | 'AZN'
+  | 'BAM'
+  | 'BBD'
+  | 'BDT'
+  | 'BGN'
+  | 'BHD'
+  | 'BIF'
+  | 'BMD'
+  | 'BND'
+  | 'BOB'
+  | 'BRL'
+  | 'BSD'
+  | 'BTN'
+  | 'BWP'
+  | 'BYN'
+  | 'BZD'
+  | 'CAD'
+  | 'CDF'
+  | 'CHF'
+  | 'CLP'
+  | 'CNY'
+  | 'COP'
+  | 'CRC'
+  | 'CUP'
+  | 'CVE'
+  | 'CZK'
+  | 'DJF'
+  | 'DKK'
+  | 'DOP'
+  | 'DZD'
+  | 'EGP'
+  | 'ERN'
+  | 'ETB'
+  | 'EUR'
+  | 'FJD'
+  | 'FKP'
+  | 'FOK'
+  | 'FRO'
+  | 'GBP'
+  | 'GEL'
+  | 'GGP'
+  | 'GHS'
+  | 'GIP'
+  | 'GMD'
+  | 'GNF'
+  | 'GTQ'
+  | 'GYD'
+  | 'HKD'
+  | 'HNL'
+  | 'HRK'
+  | 'HTG'
+  | 'HUF'
+  | 'IDR'
+  | 'ILS'
+  | 'IMP'
+  | 'INR'
+  | 'IQD'
+  | 'IRR'
+  | 'ISK'
+  | 'JEP'
+  | 'JMD'
+  | 'JOD'
+  | 'JPY'
+  | 'KES'
+  | 'KGS'
+  | 'KHR'
+  | 'KID'
+  | 'KMF'
+  | 'KRW'
+  | 'KWD'
+  | 'KYD'
+  | 'KZT'
+  | 'LAK'
+  | 'LBP'
+  | 'LKR'
+  | 'LRD'
+  | 'LSL'
+  | 'LYD'
+  | 'MAD'
+  | 'MDL'
+  | 'MGA'
+  | 'MKD'
+  | 'MMK'
+  | 'MNT'
+  | 'MOP'
+  | 'MRU'
+  | 'MUR'
+  | 'MVR'
+  | 'MWK'
+  | 'MXN'
+  | 'MYR'
+  | 'MZN'
+  | 'NAD'
+  | 'NGN'
+  | 'NIO'
+  | 'NOK'
+  | 'NPR'
+  | 'NZD'
+  | 'OMR'
+  | 'PAB'
+  | 'PEN'
+  | 'PGK'
+  | 'PHP'
+  | 'PKR'
+  | 'PLN'
+  | 'PYG'
+  | 'QAR'
+  | 'RON'
+  | 'RSD'
+  | 'RUB'
+  | 'RWF'
+  | 'SAR'
+  | 'SBD'
+  | 'SCR'
+  | 'SDG'
+  | 'SEK'
+  | 'SGD'
+  | 'SHP'
+  | 'SLL'
+  | 'SOS'
+  | 'SPL'
+  | 'SRD'
+  | 'STN'
+  | 'SVC'
+  | 'SYP'
+  | 'SZL'
+  | 'THB'
+  | 'TJS'
+  | 'TMT'
+  | 'TND'
+  | 'TOP'
+  | 'TRY'
+  | 'TTD'
+  | 'TVD'
+  | 'TWD'
+  | 'TZS'
+  | 'UAH'
+  | 'UGX'
+  | 'USD'
+  | 'UYU'
+  | 'UZS'
+  | 'VEF'
+  | 'VND'
+  | 'VUV'
+  | 'WST'
+  | 'XAF'
+  | 'XCD'
+  | 'XDR'
+  | 'XOF'
+  | 'XPF'
+  | 'YER'
+  | 'ZAR'
+  | 'ZMW'
+  | 'ZWD';
+
 export type CursorPaginationInput = {
-  cursor?: InputMaybe<Scalars['String']>;
+  cursor?: InputMaybe<Scalars['String']['input']>;
   direction: PaginationDirection;
-  limit: Scalars['PositiveInt'];
+  limit: Scalars['PositiveInt']['input'];
 };
 
 export type DeletePayload = {
   __typename?: 'DeletePayload';
-  success: Scalars['Boolean'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type DirectChat = {
   __typename?: 'DirectChat';
-  _id: Scalars['ID'];
-  creator: User;
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  creator?: Maybe<User>;
   messages?: Maybe<Array<Maybe<DirectChatMessage>>>;
   organization: Organization;
+  updatedAt: Scalars['DateTime']['output'];
   users: Array<User>;
 };
 
 export type DirectChatMessage = {
   __typename?: 'DirectChatMessage';
-  _id: Scalars['ID'];
-  createdAt: Scalars['DateTime'];
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
   directChatMessageBelongsTo: DirectChat;
-  messageContent: Scalars['String'];
+  messageContent: Scalars['String']['output'];
   receiver: User;
   sender: User;
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type Donation = {
   __typename?: 'Donation';
-  _id: Scalars['ID'];
-  amount: Scalars['Float'];
-  nameOfOrg: Scalars['String'];
-  nameOfUser: Scalars['String'];
-  orgId: Scalars['ID'];
-  payPalId: Scalars['String'];
-  userId: Scalars['ID'];
+  _id: Scalars['ID']['output'];
+  amount: Scalars['Float']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  nameOfOrg: Scalars['String']['output'];
+  nameOfUser: Scalars['String']['output'];
+  orgId: Scalars['ID']['output'];
+  payPalId: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  userId: Scalars['ID']['output'];
 };
 
 export type DonationWhereInput = {
-  id?: InputMaybe<Scalars['ID']>;
-  id_contains?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_starts_with?: InputMaybe<Scalars['ID']>;
-  name_of_user?: InputMaybe<Scalars['String']>;
-  name_of_user_contains?: InputMaybe<Scalars['String']>;
-  name_of_user_in?: InputMaybe<Array<Scalars['String']>>;
-  name_of_user_not?: InputMaybe<Scalars['String']>;
-  name_of_user_not_in?: InputMaybe<Array<Scalars['String']>>;
-  name_of_user_starts_with?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_contains?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_starts_with?: InputMaybe<Scalars['ID']['input']>;
+  name_of_user?: InputMaybe<Scalars['String']['input']>;
+  name_of_user_contains?: InputMaybe<Scalars['String']['input']>;
+  name_of_user_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_of_user_not?: InputMaybe<Scalars['String']['input']>;
+  name_of_user_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_of_user_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type EducationGrade =
@@ -238,63 +486,79 @@ export type EmploymentStatus =
   | 'UNEMPLOYED';
 
 export type Error = {
-  message: Scalars['String'];
+  message: Scalars['String']['output'];
 };
 
 export type Event = {
   __typename?: 'Event';
-  _id: Scalars['ID'];
-  admins?: Maybe<Array<Maybe<User>>>;
-  allDay: Scalars['Boolean'];
-  attendees: Array<User>;
+  _id: Scalars['ID']['output'];
+  actionItems?: Maybe<Array<Maybe<ActionItem>>>;
+  admins?: Maybe<Array<User>>;
+  allDay: Scalars['Boolean']['output'];
+  attendees?: Maybe<Array<Maybe<User>>>;
   attendeesCheckInStatus: Array<CheckInStatus>;
-  averageFeedbackScore?: Maybe<Scalars['Float']>;
-  creator: User;
-  description: Scalars['String'];
-  endDate: Scalars['Date'];
-  endTime?: Maybe<Scalars['Time']>;
+  averageFeedbackScore?: Maybe<Scalars['Float']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  creator?: Maybe<User>;
+  description: Scalars['String']['output'];
+  endDate?: Maybe<Scalars['Date']['output']>;
+  endTime?: Maybe<Scalars['Time']['output']>;
   feedback: Array<Feedback>;
-  isPublic: Scalars['Boolean'];
-  isRegisterable: Scalars['Boolean'];
-  latitude?: Maybe<Scalars['Latitude']>;
-  location?: Maybe<Scalars['String']>;
-  longitude?: Maybe<Scalars['Longitude']>;
+  isPublic: Scalars['Boolean']['output'];
+  isRegisterable: Scalars['Boolean']['output'];
+  latitude?: Maybe<Scalars['Latitude']['output']>;
+  location?: Maybe<Scalars['String']['output']>;
+  longitude?: Maybe<Scalars['Longitude']['output']>;
   organization?: Maybe<Organization>;
-  projects?: Maybe<Array<Maybe<EventProject>>>;
   recurrance?: Maybe<Recurrance>;
-  recurring: Scalars['Boolean'];
-  startDate: Scalars['Date'];
-  startTime?: Maybe<Scalars['Time']>;
+  recurring: Scalars['Boolean']['output'];
+  startDate: Scalars['Date']['output'];
+  startTime?: Maybe<Scalars['Time']['output']>;
   status: Status;
-  title: Scalars['String'];
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 
 export type EventAdminsArgs = {
-  adminId?: InputMaybe<Scalars['ID']>;
+  adminId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type EventAttendee = {
+  __typename?: 'EventAttendee';
+  _id: Scalars['ID']['output'];
+  checkInId?: Maybe<Scalars['ID']['output']>;
+  createdAt: Scalars['DateTime']['output'];
+  eventId: Scalars['ID']['output'];
+  isCheckedIn: Scalars['Boolean']['output'];
+  isCheckedOut: Scalars['Boolean']['output'];
+  isInvited: Scalars['Boolean']['output'];
+  isRegistered: Scalars['Boolean']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  userId: Scalars['ID']['output'];
 };
 
 export type EventAttendeeInput = {
-  eventId: Scalars['ID'];
-  userId: Scalars['ID'];
+  eventId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 export type EventInput = {
-  allDay: Scalars['Boolean'];
-  description: Scalars['String'];
-  endDate?: InputMaybe<Scalars['Date']>;
-  endTime?: InputMaybe<Scalars['Time']>;
-  isPublic: Scalars['Boolean'];
-  isRegisterable: Scalars['Boolean'];
-  latitude?: InputMaybe<Scalars['Latitude']>;
-  location?: InputMaybe<Scalars['String']>;
-  longitude?: InputMaybe<Scalars['Longitude']>;
-  organizationId: Scalars['ID'];
+  allDay: Scalars['Boolean']['input'];
+  description: Scalars['String']['input'];
+  endDate?: InputMaybe<Scalars['Date']['input']>;
+  endTime?: InputMaybe<Scalars['Time']['input']>;
+  isPublic: Scalars['Boolean']['input'];
+  isRegisterable: Scalars['Boolean']['input'];
+  latitude?: InputMaybe<Scalars['Latitude']['input']>;
+  location?: InputMaybe<Scalars['String']['input']>;
+  longitude?: InputMaybe<Scalars['Longitude']['input']>;
+  organizationId: Scalars['ID']['input'];
   recurrance?: InputMaybe<Recurrance>;
-  recurring: Scalars['Boolean'];
-  startDate: Scalars['Date'];
-  startTime?: InputMaybe<Scalars['Time']>;
-  title: Scalars['String'];
+  recurring: Scalars['Boolean']['input'];
+  startDate: Scalars['Date']['input'];
+  startTime?: InputMaybe<Scalars['Time']['input']>;
+  title: Scalars['String']['input'];
 };
 
 export type EventOrderByInput =
@@ -319,78 +583,129 @@ export type EventOrderByInput =
   | 'title_ASC'
   | 'title_DESC';
 
-export type EventProject = {
-  __typename?: 'EventProject';
-  _id: Scalars['ID'];
-  description: Scalars['String'];
-  event: Event;
-  tasks?: Maybe<Array<Maybe<Task>>>;
-  title: Scalars['String'];
+export type EventVolunteer = {
+  __typename?: 'EventVolunteer';
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  creator?: Maybe<User>;
+  event?: Maybe<Event>;
+  isAssigned?: Maybe<Scalars['Boolean']['output']>;
+  isInvited?: Maybe<Scalars['Boolean']['output']>;
+  response?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+  user: User;
 };
 
-export type EventProjectInput = {
-  description: Scalars['String'];
-  eventId: Scalars['ID'];
-  title: Scalars['String'];
+export type EventVolunteerInput = {
+  eventId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
+
+export type EventVolunteerResponse =
+  | 'NO'
+  | 'YES';
 
 export type EventWhereInput = {
-  description?: InputMaybe<Scalars['String']>;
-  description_contains?: InputMaybe<Scalars['String']>;
-  description_in?: InputMaybe<Array<Scalars['String']>>;
-  description_not?: InputMaybe<Scalars['String']>;
-  description_not_in?: InputMaybe<Array<Scalars['String']>>;
-  description_starts_with?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['ID']>;
-  id_contains?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_starts_with?: InputMaybe<Scalars['ID']>;
-  location?: InputMaybe<Scalars['String']>;
-  location_contains?: InputMaybe<Scalars['String']>;
-  location_in?: InputMaybe<Array<Scalars['String']>>;
-  location_not?: InputMaybe<Scalars['String']>;
-  location_not_in?: InputMaybe<Array<Scalars['String']>>;
-  location_starts_with?: InputMaybe<Scalars['String']>;
-  organization_id?: InputMaybe<Scalars['ID']>;
-  title?: InputMaybe<Scalars['String']>;
-  title_contains?: InputMaybe<Scalars['String']>;
-  title_in?: InputMaybe<Array<Scalars['String']>>;
-  title_not?: InputMaybe<Scalars['String']>;
-  title_not_in?: InputMaybe<Array<Scalars['String']>>;
-  title_starts_with?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  description_contains?: InputMaybe<Scalars['String']['input']>;
+  description_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  description_not?: InputMaybe<Scalars['String']['input']>;
+  description_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  description_starts_with?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_contains?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_starts_with?: InputMaybe<Scalars['ID']['input']>;
+  location?: InputMaybe<Scalars['String']['input']>;
+  location_contains?: InputMaybe<Scalars['String']['input']>;
+  location_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  location_not?: InputMaybe<Scalars['String']['input']>;
+  location_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  location_starts_with?: InputMaybe<Scalars['String']['input']>;
+  organization_id?: InputMaybe<Scalars['ID']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  title_contains?: InputMaybe<Scalars['String']['input']>;
+  title_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  title_not?: InputMaybe<Scalars['String']['input']>;
+  title_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  title_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ExtendSession = {
   __typename?: 'ExtendSession';
-  accessToken: Scalars['String'];
-  refreshToken: Scalars['String'];
+  accessToken: Scalars['String']['output'];
+  refreshToken: Scalars['String']['output'];
 };
 
 export type Feedback = {
   __typename?: 'Feedback';
-  _id: Scalars['ID'];
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
   event: Event;
-  rating: Scalars['Int'];
-  review?: Maybe<Scalars['String']>;
+  rating: Scalars['Int']['output'];
+  review?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type FeedbackInput = {
-  eventId: Scalars['ID'];
-  rating: Scalars['Int'];
-  review?: InputMaybe<Scalars['String']>;
+  eventId: Scalars['ID']['input'];
+  rating: Scalars['Int']['input'];
+  review?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type FieldError = {
-  message: Scalars['String'];
-  path: Array<Scalars['String']>;
+  message: Scalars['String']['output'];
+  path: Array<Scalars['String']['output']>;
 };
 
 export type ForgotPasswordData = {
-  newPassword: Scalars['String'];
-  otpToken: Scalars['String'];
-  userOtp: Scalars['String'];
+  newPassword: Scalars['String']['input'];
+  otpToken: Scalars['String']['input'];
+  userOtp: Scalars['String']['input'];
+};
+
+export type Frequency =
+  | 'DAILY'
+  | 'MONTHLY'
+  | 'WEEKLY'
+  | 'YEARLY';
+
+export type Fund = {
+  __typename?: 'Fund';
+  _id: Scalars['ID']['output'];
+  campaign: Array<Maybe<FundraisingCampaign>>;
+  createdAt: Scalars['DateTime']['output'];
+  isArchived: Scalars['Boolean']['output'];
+  isDefault: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  organizationId: Scalars['ID']['output'];
+  refrenceNumber?: Maybe<Scalars['String']['output']>;
+  taxDeductible: Scalars['Boolean']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type FundInput = {
+  isArchived: Scalars['Boolean']['input'];
+  isDefault: Scalars['Boolean']['input'];
+  name: Scalars['String']['input'];
+  organizationId: Scalars['ID']['input'];
+  refrenceNumber?: InputMaybe<Scalars['String']['input']>;
+  taxDeductible: Scalars['Boolean']['input'];
+};
+
+export type FundraisingCampaign = {
+  __typename?: 'FundraisingCampaign';
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  currency: Currency;
+  endDate: Scalars['Date']['output'];
+  fund: Fund;
+  fundingGoal: Scalars['Float']['output'];
+  name: Scalars['String']['output'];
+  startDate: Scalars['Date']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type Gender =
@@ -400,64 +715,68 @@ export type Gender =
 
 export type Group = {
   __typename?: 'Group';
-  _id?: Maybe<Scalars['ID']>;
-  admins?: Maybe<Array<Maybe<User>>>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  description?: Maybe<Scalars['String']>;
+  _id: Scalars['ID']['output'];
+  admins: Array<User>;
+  createdAt: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
   organization: Organization;
-  title?: Maybe<Scalars['String']>;
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type GroupChat = {
   __typename?: 'GroupChat';
-  _id: Scalars['ID'];
-  creator: User;
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  creator?: Maybe<User>;
   messages?: Maybe<Array<Maybe<GroupChatMessage>>>;
   organization: Organization;
+  updatedAt: Scalars['DateTime']['output'];
   users: Array<User>;
 };
 
 export type GroupChatMessage = {
   __typename?: 'GroupChatMessage';
-  _id: Scalars['ID'];
-  createdAt: Scalars['DateTime'];
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
   groupChatMessageBelongsTo: GroupChat;
-  messageContent: Scalars['String'];
+  messageContent: Scalars['String']['output'];
   sender: User;
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type InvalidCursor = FieldError & {
   __typename?: 'InvalidCursor';
-  message: Scalars['String'];
-  path: Array<Scalars['String']>;
+  message: Scalars['String']['output'];
+  path: Array<Scalars['String']['output']>;
 };
 
 export type Language = {
   __typename?: 'Language';
-  _id: Scalars['ID'];
-  createdAt: Scalars['String'];
-  en: Scalars['String'];
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['String']['output'];
+  en: Scalars['String']['output'];
   translation?: Maybe<Array<Maybe<LanguageModel>>>;
 };
 
 export type LanguageInput = {
-  en_value: Scalars['String'];
-  translation_lang_code: Scalars['String'];
-  translation_value: Scalars['String'];
+  en_value: Scalars['String']['input'];
+  translation_lang_code: Scalars['String']['input'];
+  translation_value: Scalars['String']['input'];
 };
 
 export type LanguageModel = {
   __typename?: 'LanguageModel';
-  _id: Scalars['ID'];
-  createdAt: Scalars['DateTime'];
-  lang_code: Scalars['String'];
-  value: Scalars['String'];
-  verified: Scalars['Boolean'];
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  lang_code: Scalars['String']['output'];
+  value: Scalars['String']['output'];
+  verified: Scalars['Boolean']['output'];
 };
 
 export type LoginInput = {
-  email: Scalars['EmailAddress'];
-  password: Scalars['String'];
+  email: Scalars['EmailAddress']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type MaritalStatus =
@@ -470,65 +789,67 @@ export type MaritalStatus =
 
 export type MaximumLengthError = FieldError & {
   __typename?: 'MaximumLengthError';
-  message: Scalars['String'];
-  path: Array<Scalars['String']>;
+  message: Scalars['String']['output'];
+  path: Array<Scalars['String']['output']>;
 };
 
 export type MaximumValueError = FieldError & {
   __typename?: 'MaximumValueError';
-  limit: Scalars['Int'];
-  message: Scalars['String'];
-  path: Array<Scalars['String']>;
+  limit: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  path: Array<Scalars['String']['output']>;
 };
 
 export type MembershipRequest = {
   __typename?: 'MembershipRequest';
-  _id: Scalars['ID'];
+  _id: Scalars['ID']['output'];
   organization: Organization;
   user: User;
 };
 
 export type Message = {
   __typename?: 'Message';
-  _id: Scalars['ID'];
-  createdAt?: Maybe<Scalars['DateTime']>;
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
   creator?: Maybe<User>;
-  imageUrl?: Maybe<Scalars['URL']>;
-  text?: Maybe<Scalars['String']>;
-  videoUrl?: Maybe<Scalars['URL']>;
+  imageUrl?: Maybe<Scalars['URL']['output']>;
+  text: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  videoUrl?: Maybe<Scalars['URL']['output']>;
 };
 
 export type MessageChat = {
   __typename?: 'MessageChat';
-  _id: Scalars['ID'];
-  createdAt: Scalars['DateTime'];
-  languageBarrier?: Maybe<Scalars['Boolean']>;
-  message: Scalars['String'];
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  languageBarrier?: Maybe<Scalars['Boolean']['output']>;
+  message: Scalars['String']['output'];
   receiver: User;
   sender: User;
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type MessageChatInput = {
-  message: Scalars['String'];
-  receiver: Scalars['ID'];
+  message: Scalars['String']['input'];
+  receiver: Scalars['ID']['input'];
 };
 
 export type MinimumLengthError = FieldError & {
   __typename?: 'MinimumLengthError';
-  limit: Scalars['Int'];
-  message: Scalars['String'];
-  path: Array<Scalars['String']>;
+  limit: Scalars['Int']['output'];
+  message: Scalars['String']['output'];
+  path: Array<Scalars['String']['output']>;
 };
 
 export type MinimumValueError = FieldError & {
   __typename?: 'MinimumValueError';
-  message: Scalars['String'];
-  path: Array<Scalars['String']>;
+  message: Scalars['String']['output'];
+  path: Array<Scalars['String']['output']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  acceptAdmin: Scalars['Boolean'];
+  acceptAdmin: Scalars['Boolean']['output'];
   acceptMembershipRequest: MembershipRequest;
   addEventAttendee: User;
   addFeedback: Feedback;
@@ -538,6 +859,7 @@ export type Mutation = {
   addUserCustomData: UserCustomData;
   addUserImage: User;
   addUserToGroupChat: GroupChat;
+  addUserToUserFamily: UserFamily;
   adminRemoveEvent: Event;
   adminRemoveGroup: GroupChat;
   assignUserTag?: Maybe<User>;
@@ -545,62 +867,72 @@ export type Mutation = {
   blockUser: User;
   cancelMembershipRequest: MembershipRequest;
   checkIn: CheckIn;
+  checkInEventAttendee: EventAttendee;
+  checkOutEventAttendee: EventAttendee;
+  createActionItem: ActionItem;
+  createActionItemCategory: ActionItemCategory;
   createAdmin: User;
   createAdvertisement: Advertisement;
+  createAgendaCategory: AgendaCategory;
   createComment?: Maybe<Comment>;
   createDirectChat: DirectChat;
   createDonation: Donation;
   createEvent: Event;
-  createEventProject: EventProject;
+  createEventVolunteer: EventVolunteer;
+  createFund: Fund;
   createGroupChat: GroupChat;
   createMember: Organization;
   createMessageChat: MessageChat;
   createOrganization: Organization;
   createPlugin: Plugin;
   createPost?: Maybe<Post>;
-  createSampleOrganization: Scalars['Boolean'];
-  createTask: Task;
+  createSampleOrganization: Scalars['Boolean']['output'];
+  createUserFamily: UserFamily;
   createUserTag?: Maybe<UserTag>;
   deleteAdvertisementById: DeletePayload;
+  deleteAgendaCategory: Scalars['ID']['output'];
   deleteDonationById: DeletePayload;
-  forgotPassword: Scalars['Boolean'];
+  forgotPassword: Scalars['Boolean']['output'];
+  inviteEventAttendee: EventAttendee;
   joinPublicOrganization: User;
   leaveOrganization: User;
   likeComment?: Maybe<Comment>;
   likePost?: Maybe<Post>;
   login: AuthData;
-  logout: Scalars['Boolean'];
+  logout: Scalars['Boolean']['output'];
   otp: OtpData;
-  recaptcha: Scalars['Boolean'];
+  recaptcha: Scalars['Boolean']['output'];
   refreshToken: ExtendSession;
-  registerForEvent: Event;
-  rejectAdmin: Scalars['Boolean'];
+  registerEventAttendee: EventAttendee;
+  registerForEvent: EventAttendee;
+  rejectAdmin: Scalars['Boolean']['output'];
   rejectMembershipRequest: MembershipRequest;
+  removeActionItem: ActionItem;
   removeAdmin: User;
   removeAdvertisement?: Maybe<Advertisement>;
   removeComment?: Maybe<Comment>;
   removeDirectChat: DirectChat;
   removeEvent: Event;
   removeEventAttendee: User;
-  removeEventProject: EventProject;
+  removeEventVolunteer: EventVolunteer;
   removeGroupChat: GroupChat;
   removeMember: Organization;
   removeOrganization: User;
   removeOrganizationCustomField: OrganizationCustomField;
   removeOrganizationImage: Organization;
   removePost?: Maybe<Post>;
-  removeSampleOrganization: Scalars['Boolean'];
-  removeTask?: Maybe<Task>;
+  removeSampleOrganization: Scalars['Boolean']['output'];
   removeUserCustomData: UserCustomData;
+  removeUserFamily: UserFamily;
   removeUserFromGroupChat: GroupChat;
+  removeUserFromUserFamily: UserFamily;
   removeUserImage: User;
   removeUserTag?: Maybe<UserTag>;
-  revokeRefreshTokenForUser: Scalars['Boolean'];
-  saveFcmToken: Scalars['Boolean'];
+  revokeRefreshTokenForUser: Scalars['Boolean']['output'];
+  saveFcmToken: Scalars['Boolean']['output'];
   sendMembershipRequest: MembershipRequest;
   sendMessageToDirectChat: DirectChatMessage;
   sendMessageToGroupChat: GroupChatMessage;
-  setTaskVolunteers?: Maybe<Task>;
   signUp: AuthData;
   togglePostPin: Post;
   unassignUserTag?: Maybe<User>;
@@ -608,28 +940,32 @@ export type Mutation = {
   unlikeComment?: Maybe<Comment>;
   unlikePost?: Maybe<Post>;
   unregisterForEventByUser: Event;
+  updateActionItem?: Maybe<ActionItem>;
+  updateActionItemCategory?: Maybe<ActionItemCategory>;
+  updateAdvertisement?: Maybe<UpdateAdvertisementPayload>;
+  updateAgendaCategory?: Maybe<AgendaCategory>;
   updateEvent: Event;
-  updateEventProject: EventProject;
+  updateEventVolunteer: EventVolunteer;
+  updateFund: Fund;
   updateLanguage: User;
   updateOrganization: Organization;
   updatePluginStatus: Plugin;
   updatePost: Post;
-  updateTask?: Maybe<Task>;
   updateUserPassword: User;
   updateUserProfile: User;
   updateUserRoleInOrganization: Organization;
   updateUserTag?: Maybe<UserTag>;
-  updateUserType: Scalars['Boolean'];
+  updateUserType: Scalars['Boolean']['output'];
 };
 
 
 export type MutationAcceptAdminArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationAcceptMembershipRequestArgs = {
-  membershipRequestId: Scalars['ID'];
+  membershipRequestId: Scalars['ID']['input'];
 };
 
 
@@ -649,43 +985,49 @@ export type MutationAddLanguageTranslationArgs = {
 
 
 export type MutationAddOrganizationCustomFieldArgs = {
-  name: Scalars['String'];
-  organizationId: Scalars['ID'];
-  type: Scalars['String'];
+  name: Scalars['String']['input'];
+  organizationId: Scalars['ID']['input'];
+  type: Scalars['String']['input'];
 };
 
 
 export type MutationAddOrganizationImageArgs = {
-  file: Scalars['String'];
-  organizationId: Scalars['String'];
+  file: Scalars['String']['input'];
+  organizationId: Scalars['String']['input'];
 };
 
 
 export type MutationAddUserCustomDataArgs = {
-  dataName: Scalars['String'];
-  dataValue: Scalars['Any'];
-  organizationId: Scalars['ID'];
+  dataName: Scalars['String']['input'];
+  dataValue: Scalars['Any']['input'];
+  organizationId: Scalars['ID']['input'];
 };
 
 
 export type MutationAddUserImageArgs = {
-  file: Scalars['String'];
+  file: Scalars['String']['input'];
 };
 
 
 export type MutationAddUserToGroupChatArgs = {
-  chatId: Scalars['ID'];
-  userId: Scalars['ID'];
+  chatId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
+};
+
+
+export type MutationAddUserToUserFamilyArgs = {
+  familyId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 
 export type MutationAdminRemoveEventArgs = {
-  eventId: Scalars['ID'];
+  eventId: Scalars['ID']['input'];
 };
 
 
 export type MutationAdminRemoveGroupArgs = {
-  groupId: Scalars['ID'];
+  groupId: Scalars['ID']['input'];
 };
 
 
@@ -695,24 +1037,46 @@ export type MutationAssignUserTagArgs = {
 
 
 export type MutationBlockPluginCreationBySuperadminArgs = {
-  blockUser: Scalars['Boolean'];
-  userId: Scalars['ID'];
+  blockUser: Scalars['Boolean']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 
 export type MutationBlockUserArgs = {
-  organizationId: Scalars['ID'];
-  userId: Scalars['ID'];
+  organizationId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 
 export type MutationCancelMembershipRequestArgs = {
-  membershipRequestId: Scalars['ID'];
+  membershipRequestId: Scalars['ID']['input'];
 };
 
 
 export type MutationCheckInArgs = {
   data: CheckInInput;
+};
+
+
+export type MutationCheckInEventAttendeeArgs = {
+  data: EventAttendeeInput;
+};
+
+
+export type MutationCheckOutEventAttendeeArgs = {
+  data: EventAttendeeInput;
+};
+
+
+export type MutationCreateActionItemArgs = {
+  actionItemCategoryId: Scalars['ID']['input'];
+  data: CreateActionItemInput;
+};
+
+
+export type MutationCreateActionItemCategoryArgs = {
+  name: Scalars['String']['input'];
+  organizationId: Scalars['ID']['input'];
 };
 
 
@@ -722,18 +1086,23 @@ export type MutationCreateAdminArgs = {
 
 
 export type MutationCreateAdvertisementArgs = {
-  endDate: Scalars['Date'];
-  link: Scalars['String'];
-  name: Scalars['String'];
-  orgId: Scalars['ID'];
-  startDate: Scalars['Date'];
-  type: Scalars['String'];
+  endDate: Scalars['Date']['input'];
+  link: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  orgId: Scalars['ID']['input'];
+  startDate: Scalars['Date']['input'];
+  type: Scalars['String']['input'];
+};
+
+
+export type MutationCreateAgendaCategoryArgs = {
+  input: CreateAgendaCategoryInput;
 };
 
 
 export type MutationCreateCommentArgs = {
   data: CommentInput;
-  postId: Scalars['ID'];
+  postId: Scalars['ID']['input'];
 };
 
 
@@ -743,22 +1112,28 @@ export type MutationCreateDirectChatArgs = {
 
 
 export type MutationCreateDonationArgs = {
-  amount: Scalars['Float'];
-  nameOfOrg: Scalars['String'];
-  nameOfUser: Scalars['String'];
-  orgId: Scalars['ID'];
-  payPalId: Scalars['ID'];
-  userId: Scalars['ID'];
+  amount: Scalars['Float']['input'];
+  nameOfOrg: Scalars['String']['input'];
+  nameOfUser: Scalars['String']['input'];
+  orgId: Scalars['ID']['input'];
+  payPalId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 
 export type MutationCreateEventArgs = {
-  data?: InputMaybe<EventInput>;
+  data: EventInput;
+  recurrenceRuleData?: InputMaybe<RecurrenceRuleInput>;
 };
 
 
-export type MutationCreateEventProjectArgs = {
-  data: EventProjectInput;
+export type MutationCreateEventVolunteerArgs = {
+  data: EventVolunteerInput;
+};
+
+
+export type MutationCreateFundArgs = {
+  data: FundInput;
 };
 
 
@@ -779,27 +1154,26 @@ export type MutationCreateMessageChatArgs = {
 
 export type MutationCreateOrganizationArgs = {
   data?: InputMaybe<OrganizationInput>;
-  file?: InputMaybe<Scalars['String']>;
+  file?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type MutationCreatePluginArgs = {
-  pluginCreatedBy: Scalars['String'];
-  pluginDesc: Scalars['String'];
-  pluginName: Scalars['String'];
-  uninstalledOrgs?: InputMaybe<Array<Scalars['ID']>>;
+  pluginCreatedBy: Scalars['String']['input'];
+  pluginDesc: Scalars['String']['input'];
+  pluginName: Scalars['String']['input'];
+  uninstalledOrgs?: InputMaybe<Array<Scalars['ID']['input']>>;
 };
 
 
 export type MutationCreatePostArgs = {
   data: PostInput;
-  file?: InputMaybe<Scalars['String']>;
+  file?: InputMaybe<Scalars['String']['input']>;
 };
 
 
-export type MutationCreateTaskArgs = {
-  data: TaskInput;
-  eventProjectId: Scalars['ID'];
+export type MutationCreateUserFamilyArgs = {
+  data: CreateUserFamilyInput;
 };
 
 
@@ -809,12 +1183,17 @@ export type MutationCreateUserTagArgs = {
 
 
 export type MutationDeleteAdvertisementByIdArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteAgendaCategoryArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationDeleteDonationByIdArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -823,23 +1202,28 @@ export type MutationForgotPasswordArgs = {
 };
 
 
+export type MutationInviteEventAttendeeArgs = {
+  data: EventAttendeeInput;
+};
+
+
 export type MutationJoinPublicOrganizationArgs = {
-  organizationId: Scalars['ID'];
+  organizationId: Scalars['ID']['input'];
 };
 
 
 export type MutationLeaveOrganizationArgs = {
-  organizationId: Scalars['ID'];
+  organizationId: Scalars['ID']['input'];
 };
 
 
 export type MutationLikeCommentArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationLikePostArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -859,22 +1243,32 @@ export type MutationRecaptchaArgs = {
 
 
 export type MutationRefreshTokenArgs = {
-  refreshToken: Scalars['String'];
+  refreshToken: Scalars['String']['input'];
+};
+
+
+export type MutationRegisterEventAttendeeArgs = {
+  data: EventAttendeeInput;
 };
 
 
 export type MutationRegisterForEventArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationRejectAdminArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationRejectMembershipRequestArgs = {
-  membershipRequestId: Scalars['ID'];
+  membershipRequestId: Scalars['ID']['input'];
+};
+
+
+export type MutationRemoveActionItemArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -884,23 +1278,23 @@ export type MutationRemoveAdminArgs = {
 
 
 export type MutationRemoveAdvertisementArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveCommentArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveDirectChatArgs = {
-  chatId: Scalars['ID'];
-  organizationId: Scalars['ID'];
+  chatId: Scalars['ID']['input'];
+  organizationId: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveEventArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -909,13 +1303,13 @@ export type MutationRemoveEventAttendeeArgs = {
 };
 
 
-export type MutationRemoveEventProjectArgs = {
-  id: Scalars['ID'];
+export type MutationRemoveEventVolunteerArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveGroupChatArgs = {
-  chatId: Scalars['ID'];
+  chatId: Scalars['ID']['input'];
 };
 
 
@@ -925,83 +1319,84 @@ export type MutationRemoveMemberArgs = {
 
 
 export type MutationRemoveOrganizationArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveOrganizationCustomFieldArgs = {
-  customFieldId: Scalars['ID'];
-  organizationId: Scalars['ID'];
+  customFieldId: Scalars['ID']['input'];
+  organizationId: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveOrganizationImageArgs = {
-  organizationId: Scalars['String'];
+  organizationId: Scalars['String']['input'];
 };
 
 
 export type MutationRemovePostArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationRemoveTaskArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveUserCustomDataArgs = {
-  organizationId: Scalars['ID'];
+  organizationId: Scalars['ID']['input'];
+};
+
+
+export type MutationRemoveUserFamilyArgs = {
+  familyId: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveUserFromGroupChatArgs = {
-  chatId: Scalars['ID'];
-  userId: Scalars['ID'];
+  chatId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
+};
+
+
+export type MutationRemoveUserFromUserFamilyArgs = {
+  familyId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveUserTagArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationSaveFcmTokenArgs = {
-  token?: InputMaybe<Scalars['String']>;
+  token?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type MutationSendMembershipRequestArgs = {
-  organizationId: Scalars['ID'];
+  organizationId: Scalars['ID']['input'];
 };
 
 
 export type MutationSendMessageToDirectChatArgs = {
-  chatId: Scalars['ID'];
-  messageContent: Scalars['String'];
+  chatId: Scalars['ID']['input'];
+  messageContent: Scalars['String']['input'];
 };
 
 
 export type MutationSendMessageToGroupChatArgs = {
-  chatId: Scalars['ID'];
-  messageContent: Scalars['String'];
-};
-
-
-export type MutationSetTaskVolunteersArgs = {
-  id: Scalars['ID'];
-  volunteers: Array<InputMaybe<Scalars['ID']>>;
+  chatId: Scalars['ID']['input'];
+  messageContent: Scalars['String']['input'];
 };
 
 
 export type MutationSignUpArgs = {
   data: UserInput;
-  file?: InputMaybe<Scalars['String']>;
+  file?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type MutationTogglePostPinArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1011,65 +1406,88 @@ export type MutationUnassignUserTagArgs = {
 
 
 export type MutationUnblockUserArgs = {
-  organizationId: Scalars['ID'];
-  userId: Scalars['ID'];
+  organizationId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 
 export type MutationUnlikeCommentArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationUnlikePostArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationUnregisterForEventByUserArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateActionItemArgs = {
+  data: UpdateActionItemInput;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateActionItemCategoryArgs = {
+  data: UpdateActionItemCategoryInput;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateAdvertisementArgs = {
+  input: UpdateAdvertisementInput;
+};
+
+
+export type MutationUpdateAgendaCategoryArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateAgendaCategoryInput;
 };
 
 
 export type MutationUpdateEventArgs = {
   data?: InputMaybe<UpdateEventInput>;
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
-export type MutationUpdateEventProjectArgs = {
-  data: UpdateEventProjectInput;
-  id: Scalars['ID'];
+export type MutationUpdateEventVolunteerArgs = {
+  data?: InputMaybe<UpdateEventVolunteerInput>;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateFundArgs = {
+  data: UpdateFundInput;
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationUpdateLanguageArgs = {
-  languageCode: Scalars['String'];
+  languageCode: Scalars['String']['input'];
 };
 
 
 export type MutationUpdateOrganizationArgs = {
   data?: InputMaybe<UpdateOrganizationInput>;
-  file?: InputMaybe<Scalars['String']>;
-  id: Scalars['ID'];
+  file?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationUpdatePluginStatusArgs = {
-  id: Scalars['ID'];
-  orgId: Scalars['ID'];
+  id: Scalars['ID']['input'];
+  orgId: Scalars['ID']['input'];
 };
 
 
 export type MutationUpdatePostArgs = {
   data?: InputMaybe<PostUpdateInput>;
-  id: Scalars['ID'];
-};
-
-
-export type MutationUpdateTaskArgs = {
-  data: UpdateTaskInput;
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1080,14 +1498,14 @@ export type MutationUpdateUserPasswordArgs = {
 
 export type MutationUpdateUserProfileArgs = {
   data?: InputMaybe<UpdateUserInput>;
-  file?: InputMaybe<Scalars['String']>;
+  file?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type MutationUpdateUserRoleInOrganizationArgs = {
-  organizationId: Scalars['ID'];
-  role: Scalars['String'];
-  userId: Scalars['ID'];
+  organizationId: Scalars['ID']['input'];
+  role: Scalars['String']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 
@@ -1101,72 +1519,75 @@ export type MutationUpdateUserTypeArgs = {
 };
 
 export type OtpInput = {
-  email: Scalars['EmailAddress'];
+  email: Scalars['EmailAddress']['input'];
 };
 
 export type Organization = {
   __typename?: 'Organization';
-  _id: Scalars['ID'];
-  admins?: Maybe<Array<Maybe<User>>>;
-  apiUrl: Scalars['URL'];
+  _id: Scalars['ID']['output'];
+  actionItemCategories?: Maybe<Array<Maybe<ActionItemCategory>>>;
+  address?: Maybe<Address>;
+  admins?: Maybe<Array<User>>;
+  agendaCategories?: Maybe<Array<Maybe<AgendaCategory>>>;
+  apiUrl: Scalars['URL']['output'];
   blockedUsers?: Maybe<Array<Maybe<User>>>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  creator: User;
+  createdAt: Scalars['DateTime']['output'];
+  creator?: Maybe<User>;
   customFields: Array<OrganizationCustomField>;
-  description: Scalars['String'];
-  image?: Maybe<Scalars['String']>;
-  isPublic: Scalars['Boolean'];
-  location?: Maybe<Scalars['String']>;
+  description: Scalars['String']['output'];
+  image?: Maybe<Scalars['String']['output']>;
   members?: Maybe<Array<Maybe<User>>>;
   membershipRequests?: Maybe<Array<Maybe<MembershipRequest>>>;
-  name: Scalars['String'];
+  name: Scalars['String']['output'];
   pinnedPosts?: Maybe<Array<Maybe<Post>>>;
+  updatedAt: Scalars['DateTime']['output'];
+  userRegistrationRequired: Scalars['Boolean']['output'];
   userTags?: Maybe<UserTagsConnection>;
-  visibleInSearch: Scalars['Boolean'];
+  visibleInSearch: Scalars['Boolean']['output'];
 };
 
 
 export type OrganizationAdminsArgs = {
-  adminId?: InputMaybe<Scalars['ID']>;
+  adminId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
 export type OrganizationUserTagsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['PositiveInt']>;
-  last?: InputMaybe<Scalars['PositiveInt']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['PositiveInt']['input']>;
+  last?: InputMaybe<Scalars['PositiveInt']['input']>;
 };
 
 export type OrganizationCustomField = {
   __typename?: 'OrganizationCustomField';
-  _id: Scalars['ID'];
-  name: Scalars['String'];
-  organizationId: Scalars['String'];
-  type: Scalars['String'];
+  _id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  organizationId: Scalars['String']['output'];
+  type: Scalars['String']['output'];
 };
 
 export type OrganizationInfoNode = {
   __typename?: 'OrganizationInfoNode';
-  _id: Scalars['ID'];
-  apiUrl: Scalars['URL'];
-  creator: User;
-  description: Scalars['String'];
-  image?: Maybe<Scalars['String']>;
-  isPublic: Scalars['Boolean'];
-  name: Scalars['String'];
-  visibleInSearch: Scalars['Boolean'];
+  _id: Scalars['ID']['output'];
+  apiUrl: Scalars['URL']['output'];
+  creator?: Maybe<User>;
+  description: Scalars['String']['output'];
+  image?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  userRegistrationRequired: Scalars['Boolean']['output'];
+  visibleInSearch: Scalars['Boolean']['output'];
 };
 
 export type OrganizationInput = {
-  apiUrl?: InputMaybe<Scalars['URL']>;
-  attendees?: InputMaybe<Scalars['String']>;
-  description: Scalars['String'];
-  image?: InputMaybe<Scalars['String']>;
-  isPublic: Scalars['Boolean'];
-  location?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
-  visibleInSearch: Scalars['Boolean'];
+  address: AddressInput;
+  apiUrl?: InputMaybe<Scalars['URL']['input']>;
+  attendees?: InputMaybe<Scalars['String']['input']>;
+  description: Scalars['String']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  userRegistrationRequired?: InputMaybe<Scalars['Boolean']['input']>;
+  visibleInSearch?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type OrganizationOrderByInput =
@@ -1182,50 +1603,50 @@ export type OrganizationOrderByInput =
   | 'name_DESC';
 
 export type OrganizationWhereInput = {
-  apiUrl?: InputMaybe<Scalars['URL']>;
-  apiUrl_contains?: InputMaybe<Scalars['URL']>;
-  apiUrl_in?: InputMaybe<Array<Scalars['URL']>>;
-  apiUrl_not?: InputMaybe<Scalars['URL']>;
-  apiUrl_not_in?: InputMaybe<Array<Scalars['URL']>>;
-  apiUrl_starts_with?: InputMaybe<Scalars['URL']>;
-  description?: InputMaybe<Scalars['String']>;
-  description_contains?: InputMaybe<Scalars['String']>;
-  description_in?: InputMaybe<Array<Scalars['String']>>;
-  description_not?: InputMaybe<Scalars['String']>;
-  description_not_in?: InputMaybe<Array<Scalars['String']>>;
-  description_starts_with?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['ID']>;
-  id_contains?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_starts_with?: InputMaybe<Scalars['ID']>;
-  isPublic?: InputMaybe<Scalars['Boolean']>;
-  name?: InputMaybe<Scalars['String']>;
-  name_contains?: InputMaybe<Scalars['String']>;
-  name_in?: InputMaybe<Array<Scalars['String']>>;
-  name_not?: InputMaybe<Scalars['String']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']>>;
-  name_starts_with?: InputMaybe<Scalars['String']>;
-  visibleInSearch?: InputMaybe<Scalars['Boolean']>;
+  apiUrl?: InputMaybe<Scalars['URL']['input']>;
+  apiUrl_contains?: InputMaybe<Scalars['URL']['input']>;
+  apiUrl_in?: InputMaybe<Array<Scalars['URL']['input']>>;
+  apiUrl_not?: InputMaybe<Scalars['URL']['input']>;
+  apiUrl_not_in?: InputMaybe<Array<Scalars['URL']['input']>>;
+  apiUrl_starts_with?: InputMaybe<Scalars['URL']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  description_contains?: InputMaybe<Scalars['String']['input']>;
+  description_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  description_not?: InputMaybe<Scalars['String']['input']>;
+  description_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  description_starts_with?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_contains?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_starts_with?: InputMaybe<Scalars['ID']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_starts_with?: InputMaybe<Scalars['String']['input']>;
+  userRegistrationRequired?: InputMaybe<Scalars['Boolean']['input']>;
+  visibleInSearch?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type OtpData = {
   __typename?: 'OtpData';
-  otpToken: Scalars['String'];
+  otpToken: Scalars['String']['output'];
 };
 
 /** Information about pagination in a connection. */
 export type PageInfo = {
   __typename?: 'PageInfo';
-  currPageNo?: Maybe<Scalars['Int']>;
+  currPageNo?: Maybe<Scalars['Int']['output']>;
   /** When paginating forwards, are there more items? */
-  hasNextPage: Scalars['Boolean'];
+  hasNextPage: Scalars['Boolean']['output'];
   /** When paginating backwards, are there more items? */
-  hasPreviousPage: Scalars['Boolean'];
-  nextPageNo?: Maybe<Scalars['Int']>;
-  prevPageNo?: Maybe<Scalars['Int']>;
-  totalPages?: Maybe<Scalars['Int']>;
+  hasPreviousPage: Scalars['Boolean']['output'];
+  nextPageNo?: Maybe<Scalars['Int']['output']>;
+  prevPageNo?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
 };
 
 export type PaginationDirection =
@@ -1234,49 +1655,50 @@ export type PaginationDirection =
 
 export type Plugin = {
   __typename?: 'Plugin';
-  _id: Scalars['ID'];
-  pluginCreatedBy: Scalars['String'];
-  pluginDesc: Scalars['String'];
-  pluginName: Scalars['String'];
-  uninstalledOrgs: Array<Scalars['ID']>;
+  _id: Scalars['ID']['output'];
+  pluginCreatedBy: Scalars['String']['output'];
+  pluginDesc: Scalars['String']['output'];
+  pluginName: Scalars['String']['output'];
+  uninstalledOrgs?: Maybe<Array<Scalars['ID']['output']>>;
 };
 
 export type PluginField = {
   __typename?: 'PluginField';
-  createdAt?: Maybe<Scalars['DateTime']>;
-  key: Scalars['String'];
+  createdAt: Scalars['DateTime']['output'];
+  key: Scalars['String']['output'];
   status: Status;
-  value: Scalars['String'];
+  value: Scalars['String']['output'];
 };
 
 export type PluginFieldInput = {
-  key: Scalars['String'];
-  value: Scalars['String'];
+  key: Scalars['String']['input'];
+  value: Scalars['String']['input'];
 };
 
 export type PluginInput = {
   fields?: InputMaybe<Array<InputMaybe<PluginFieldInput>>>;
-  orgId: Scalars['ID'];
-  pluginKey?: InputMaybe<Scalars['String']>;
-  pluginName: Scalars['String'];
+  orgId: Scalars['ID']['input'];
+  pluginKey?: InputMaybe<Scalars['String']['input']>;
+  pluginName: Scalars['String']['input'];
   pluginType?: InputMaybe<Type>;
 };
 
 export type Post = {
   __typename?: 'Post';
-  _id?: Maybe<Scalars['ID']>;
-  commentCount?: Maybe<Scalars['Int']>;
+  _id?: Maybe<Scalars['ID']['output']>;
+  commentCount?: Maybe<Scalars['Int']['output']>;
   comments?: Maybe<Array<Maybe<Comment>>>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  creator: User;
-  imageUrl?: Maybe<Scalars['URL']>;
-  likeCount?: Maybe<Scalars['Int']>;
+  createdAt: Scalars['DateTime']['output'];
+  creator?: Maybe<User>;
+  imageUrl?: Maybe<Scalars['URL']['output']>;
+  likeCount?: Maybe<Scalars['Int']['output']>;
   likedBy?: Maybe<Array<Maybe<User>>>;
   organization: Organization;
-  pinned?: Maybe<Scalars['Boolean']>;
-  text: Scalars['String'];
-  title?: Maybe<Scalars['String']>;
-  videoUrl?: Maybe<Scalars['URL']>;
+  pinned?: Maybe<Scalars['Boolean']['output']>;
+  text: Scalars['String']['output'];
+  title?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+  videoUrl?: Maybe<Scalars['URL']['output']>;
 };
 
 /** A connection to a list of items. */
@@ -1290,13 +1712,13 @@ export type PostConnection = {
 };
 
 export type PostInput = {
-  _id?: InputMaybe<Scalars['ID']>;
-  imageUrl?: InputMaybe<Scalars['URL']>;
-  organizationId: Scalars['ID'];
-  pinned?: InputMaybe<Scalars['Boolean']>;
-  text: Scalars['String'];
-  title?: InputMaybe<Scalars['String']>;
-  videoUrl?: InputMaybe<Scalars['URL']>;
+  _id?: InputMaybe<Scalars['ID']['input']>;
+  imageUrl?: InputMaybe<Scalars['URL']['input']>;
+  organizationId: Scalars['ID']['input'];
+  pinned?: InputMaybe<Scalars['Boolean']['input']>;
+  text: Scalars['String']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
+  videoUrl?: InputMaybe<Scalars['URL']['input']>;
 };
 
 export type PostOrderByInput =
@@ -1318,55 +1740,64 @@ export type PostOrderByInput =
   | 'videoUrl_DESC';
 
 export type PostUpdateInput = {
-  imageUrl?: InputMaybe<Scalars['String']>;
-  text?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
-  videoUrl?: InputMaybe<Scalars['String']>;
+  imageUrl?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  videoUrl?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type PostWhereInput = {
-  id?: InputMaybe<Scalars['ID']>;
-  id_contains?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_starts_with?: InputMaybe<Scalars['ID']>;
-  text?: InputMaybe<Scalars['String']>;
-  text_contains?: InputMaybe<Scalars['String']>;
-  text_in?: InputMaybe<Array<Scalars['String']>>;
-  text_not?: InputMaybe<Scalars['String']>;
-  text_not_in?: InputMaybe<Array<Scalars['String']>>;
-  text_starts_with?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
-  title_contains?: InputMaybe<Scalars['String']>;
-  title_in?: InputMaybe<Array<Scalars['String']>>;
-  title_not?: InputMaybe<Scalars['String']>;
-  title_not_in?: InputMaybe<Array<Scalars['String']>>;
-  title_starts_with?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_contains?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_starts_with?: InputMaybe<Scalars['ID']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+  text_contains?: InputMaybe<Scalars['String']['input']>;
+  text_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  text_not?: InputMaybe<Scalars['String']['input']>;
+  text_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  text_starts_with?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  title_contains?: InputMaybe<Scalars['String']['input']>;
+  title_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  title_not?: InputMaybe<Scalars['String']['input']>;
+  title_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  title_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query = {
   __typename?: 'Query';
+  actionItem?: Maybe<ActionItem>;
+  actionItemCategoriesByOrganization?: Maybe<Array<Maybe<ActionItemCategory>>>;
+  actionItemCategory?: Maybe<ActionItemCategory>;
+  actionItemsByEvent?: Maybe<Array<Maybe<ActionItem>>>;
+  actionItemsByOrganization?: Maybe<Array<Maybe<ActionItem>>>;
   adminPlugin?: Maybe<Array<Maybe<Plugin>>>;
+  agendaCategory: AgendaCategory;
   checkAuth: User;
   customDataByOrganization: Array<UserCustomData>;
   customFieldsByOrganization?: Maybe<Array<Maybe<OrganizationCustomField>>>;
   directChatsByUserID?: Maybe<Array<Maybe<DirectChat>>>;
   directChatsMessagesByChatID?: Maybe<Array<Maybe<DirectChatMessage>>>;
   event?: Maybe<Event>;
+  eventVolunteersByEvent?: Maybe<Array<Maybe<EventVolunteer>>>;
   eventsByOrganization?: Maybe<Array<Maybe<Event>>>;
   eventsByOrganizationConnection: Array<Event>;
   getAdvertisements?: Maybe<Array<Maybe<Advertisement>>>;
   getDonationById: Donation;
   getDonationByOrgId?: Maybe<Array<Maybe<Donation>>>;
   getDonationByOrgIdConnection: Array<Donation>;
+  getEventAttendee?: Maybe<EventAttendee>;
+  getEventAttendeesByEventId?: Maybe<Array<Maybe<EventAttendee>>>;
   getPlugins?: Maybe<Array<Maybe<Plugin>>>;
   getlanguage?: Maybe<Array<Maybe<Translation>>>;
-  hasSubmittedFeedback?: Maybe<Scalars['Boolean']>;
-  isSampleOrganization: Scalars['Boolean'];
+  hasSubmittedFeedback?: Maybe<Scalars['Boolean']['output']>;
+  isSampleOrganization: Scalars['Boolean']['output'];
   joinedOrganizations?: Maybe<Array<Maybe<Organization>>>;
   me: User;
-  myLanguage?: Maybe<Scalars['String']>;
+  myLanguage?: Maybe<Scalars['String']['output']>;
   organizations?: Maybe<Array<Maybe<Organization>>>;
   organizationsConnection: Array<Maybe<Organization>>;
   organizationsMemberConnection: UserConnection;
@@ -1377,183 +1808,231 @@ export type Query = {
   registeredEventsByUser?: Maybe<Array<Maybe<Event>>>;
   registrantsByEvent?: Maybe<Array<Maybe<User>>>;
   user: User;
-  userLanguage?: Maybe<Scalars['String']>;
+  userLanguage?: Maybe<Scalars['String']['output']>;
   users?: Maybe<Array<Maybe<User>>>;
   usersConnection: Array<Maybe<User>>;
 };
 
 
+export type QueryActionItemArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryActionItemCategoriesByOrganizationArgs = {
+  organizationId: Scalars['ID']['input'];
+};
+
+
+export type QueryActionItemCategoryArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryActionItemsByEventArgs = {
+  eventId: Scalars['ID']['input'];
+};
+
+
+export type QueryActionItemsByOrganizationArgs = {
+  orderBy?: InputMaybe<ActionItemsOrderByInput>;
+  organizationId: Scalars['ID']['input'];
+  where?: InputMaybe<ActionItemWhereInput>;
+};
+
+
 export type QueryAdminPluginArgs = {
-  orgId: Scalars['ID'];
+  orgId: Scalars['ID']['input'];
+};
+
+
+export type QueryAgendaCategoryArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryCustomDataByOrganizationArgs = {
-  organizationId: Scalars['ID'];
+  organizationId: Scalars['ID']['input'];
 };
 
 
 export type QueryCustomFieldsByOrganizationArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryDirectChatsByUserIdArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryDirectChatsMessagesByChatIdArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryEventArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryEventVolunteersByEventArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryEventsByOrganizationArgs = {
-  id?: InputMaybe<Scalars['ID']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
   orderBy?: InputMaybe<EventOrderByInput>;
 };
 
 
 export type QueryEventsByOrganizationConnectionArgs = {
-  first?: InputMaybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<EventOrderByInput>;
-  skip?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<EventWhereInput>;
 };
 
 
 export type QueryGetDonationByIdArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryGetDonationByOrgIdArgs = {
-  orgId: Scalars['ID'];
+  orgId: Scalars['ID']['input'];
 };
 
 
 export type QueryGetDonationByOrgIdConnectionArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  orgId: Scalars['ID'];
-  skip?: InputMaybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orgId: Scalars['ID']['input'];
+  skip?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<DonationWhereInput>;
 };
 
 
+export type QueryGetEventAttendeeArgs = {
+  eventId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
+};
+
+
+export type QueryGetEventAttendeesByEventIdArgs = {
+  eventId: Scalars['ID']['input'];
+};
+
+
 export type QueryGetlanguageArgs = {
-  lang_code: Scalars['String'];
+  lang_code: Scalars['String']['input'];
 };
 
 
 export type QueryHasSubmittedFeedbackArgs = {
-  eventId: Scalars['ID'];
-  userId: Scalars['ID'];
+  eventId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 
 export type QueryIsSampleOrganizationArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryJoinedOrganizationsArgs = {
-  id?: InputMaybe<Scalars['ID']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
 export type QueryOrganizationsArgs = {
-  id?: InputMaybe<Scalars['ID']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
   orderBy?: InputMaybe<OrganizationOrderByInput>;
 };
 
 
 export type QueryOrganizationsConnectionArgs = {
-  first?: InputMaybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<OrganizationOrderByInput>;
-  skip?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<OrganizationWhereInput>;
 };
 
 
 export type QueryOrganizationsMemberConnectionArgs = {
-  first?: InputMaybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<UserOrderByInput>;
-  orgId: Scalars['ID'];
-  skip?: InputMaybe<Scalars['Int']>;
+  orgId: Scalars['ID']['input'];
+  skip?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<UserWhereInput>;
 };
 
 
 export type QueryPluginArgs = {
-  orgId: Scalars['ID'];
+  orgId: Scalars['ID']['input'];
 };
 
 
 export type QueryPostArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryPostsByOrganizationArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
   orderBy?: InputMaybe<PostOrderByInput>;
 };
 
 
 export type QueryPostsByOrganizationConnectionArgs = {
-  first?: InputMaybe<Scalars['Int']>;
-  id: Scalars['ID'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+  id: Scalars['ID']['input'];
   orderBy?: InputMaybe<PostOrderByInput>;
-  skip?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<PostWhereInput>;
 };
 
 
 export type QueryRegisteredEventsByUserArgs = {
-  id?: InputMaybe<Scalars['ID']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
   orderBy?: InputMaybe<EventOrderByInput>;
 };
 
 
 export type QueryRegistrantsByEventArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryUserArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryUserLanguageArgs = {
-  userId: Scalars['ID'];
+  userId: Scalars['ID']['input'];
 };
 
 
 export type QueryUsersArgs = {
-  adminApproved?: InputMaybe<Scalars['Boolean']>;
-  first?: InputMaybe<Scalars['Int']>;
+  adminApproved?: InputMaybe<Scalars['Boolean']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<UserOrderByInput>;
-  skip?: InputMaybe<Scalars['Int']>;
-  userType?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  userType?: InputMaybe<Scalars['String']['input']>;
   where?: InputMaybe<UserWhereInput>;
 };
 
 
 export type QueryUsersConnectionArgs = {
-  first?: InputMaybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<UserOrderByInput>;
-  skip?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<UserWhereInput>;
 };
 
 export type RecaptchaVerification = {
-  recaptchaToken: Scalars['String'];
+  recaptchaToken: Scalars['String']['input'];
 };
 
 export type Recurrance =
@@ -1562,6 +2041,12 @@ export type Recurrance =
   | 'ONCE'
   | 'WEEKLY'
   | 'YEARLY';
+
+export type RecurrenceRuleInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  frequency?: InputMaybe<Frequency>;
+  weekDays?: InputMaybe<Array<InputMaybe<WeekDays>>>;
+};
 
 export type Status =
   | 'ACTIVE'
@@ -1576,48 +2061,17 @@ export type Subscription = {
   onPluginUpdate?: Maybe<Plugin>;
 };
 
-export type Task = {
-  __typename?: 'Task';
-  _id: Scalars['ID'];
-  completed?: Maybe<Scalars['Boolean']>;
-  createdAt: Scalars['DateTime'];
-  creator: User;
-  deadline?: Maybe<Scalars['DateTime']>;
-  description?: Maybe<Scalars['String']>;
-  event: Event;
-  title: Scalars['String'];
-  volunteers?: Maybe<Array<Maybe<User>>>;
-};
-
-export type TaskInput = {
-  deadline: Scalars['DateTime'];
-  description: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type TaskOrderByInput =
-  | 'createdAt_ASC'
-  | 'createdAt_DESC'
-  | 'deadline_ASC'
-  | 'deadline_DESC'
-  | 'description_ASC'
-  | 'description_DESC'
-  | 'id_ASC'
-  | 'id_DESC'
-  | 'title_ASC'
-  | 'title_DESC';
-
 export type ToggleUserTagAssignInput = {
-  tagId: Scalars['ID'];
-  userId: Scalars['ID'];
+  tagId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 export type Translation = {
   __typename?: 'Translation';
-  en_value?: Maybe<Scalars['String']>;
-  lang_code?: Maybe<Scalars['String']>;
-  translation?: Maybe<Scalars['String']>;
-  verified?: Maybe<Scalars['Boolean']>;
+  en_value?: Maybe<Scalars['String']['output']>;
+  lang_code?: Maybe<Scalars['String']['output']>;
+  translation?: Maybe<Scalars['String']['output']>;
+  verified?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type Type =
@@ -1626,125 +2080,159 @@ export type Type =
 
 export type UnauthenticatedError = Error & {
   __typename?: 'UnauthenticatedError';
-  message: Scalars['String'];
+  message: Scalars['String']['output'];
 };
 
 export type UnauthorizedError = Error & {
   __typename?: 'UnauthorizedError';
-  message: Scalars['String'];
+  message: Scalars['String']['output'];
+};
+
+export type UpdateActionItemCategoryInput = {
+  isDisabled?: InputMaybe<Scalars['Boolean']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateActionItemInput = {
+  assigneeId?: InputMaybe<Scalars['ID']['input']>;
+  completionDate?: InputMaybe<Scalars['Date']['input']>;
+  dueDate?: InputMaybe<Scalars['Date']['input']>;
+  isCompleted?: InputMaybe<Scalars['Boolean']['input']>;
+  postCompletionNotes?: InputMaybe<Scalars['String']['input']>;
+  preCompletionNotes?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateAdvertisementInput = {
+  _id: Scalars['ID']['input'];
+  endDate?: InputMaybe<Scalars['Date']['input']>;
+  link?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  startDate?: InputMaybe<Scalars['Date']['input']>;
+  type?: InputMaybe<AdvertisementType>;
+};
+
+export type UpdateAdvertisementPayload = {
+  __typename?: 'UpdateAdvertisementPayload';
+  advertisement?: Maybe<Advertisement>;
+};
+
+export type UpdateAgendaCategoryInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateEventInput = {
-  allDay?: InputMaybe<Scalars['Boolean']>;
-  description?: InputMaybe<Scalars['String']>;
-  endDate?: InputMaybe<Scalars['Date']>;
-  endTime?: InputMaybe<Scalars['Time']>;
-  isPublic?: InputMaybe<Scalars['Boolean']>;
-  isRegisterable?: InputMaybe<Scalars['Boolean']>;
-  latitude?: InputMaybe<Scalars['Latitude']>;
-  location?: InputMaybe<Scalars['String']>;
-  longitude?: InputMaybe<Scalars['Longitude']>;
+  allDay?: InputMaybe<Scalars['Boolean']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  endDate?: InputMaybe<Scalars['Date']['input']>;
+  endTime?: InputMaybe<Scalars['Time']['input']>;
+  isPublic?: InputMaybe<Scalars['Boolean']['input']>;
+  isRegisterable?: InputMaybe<Scalars['Boolean']['input']>;
+  latitude?: InputMaybe<Scalars['Latitude']['input']>;
+  location?: InputMaybe<Scalars['String']['input']>;
+  longitude?: InputMaybe<Scalars['Longitude']['input']>;
   recurrance?: InputMaybe<Recurrance>;
-  recurring?: InputMaybe<Scalars['Boolean']>;
-  startDate?: InputMaybe<Scalars['Date']>;
-  startTime?: InputMaybe<Scalars['Time']>;
-  title?: InputMaybe<Scalars['String']>;
+  recurring?: InputMaybe<Scalars['Boolean']['input']>;
+  startDate?: InputMaybe<Scalars['Date']['input']>;
+  startTime?: InputMaybe<Scalars['Time']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type UpdateEventProjectInput = {
-  description?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
+export type UpdateEventVolunteerInput = {
+  eventId?: InputMaybe<Scalars['ID']['input']>;
+  isAssigned?: InputMaybe<Scalars['Boolean']['input']>;
+  isInvited?: InputMaybe<Scalars['Boolean']['input']>;
+  response?: InputMaybe<EventVolunteerResponse>;
+};
+
+export type UpdateFundInput = {
+  isArchived?: InputMaybe<Scalars['Boolean']['input']>;
+  isDefault?: InputMaybe<Scalars['Boolean']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  taxDeductible?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateOrganizationInput = {
-  description?: InputMaybe<Scalars['String']>;
-  isPublic?: InputMaybe<Scalars['Boolean']>;
-  location?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  visibleInSearch?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type UpdateTaskInput = {
-  completed?: InputMaybe<Scalars['Boolean']>;
-  deadline?: InputMaybe<Scalars['DateTime']>;
-  description?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
+  address?: InputMaybe<AddressInput>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  userRegistrationRequired?: InputMaybe<Scalars['Boolean']['input']>;
+  visibleInSearch?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateUserInput = {
   address?: InputMaybe<AddressInput>;
-  birthDate?: InputMaybe<Scalars['Date']>;
+  birthDate?: InputMaybe<Scalars['Date']['input']>;
   educationGrade?: InputMaybe<EducationGrade>;
-  email?: InputMaybe<Scalars['EmailAddress']>;
+  email?: InputMaybe<Scalars['EmailAddress']['input']>;
   employmentStatus?: InputMaybe<EmploymentStatus>;
-  firstName?: InputMaybe<Scalars['String']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
   gender?: InputMaybe<Gender>;
-  lastName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
   maritalStatus?: InputMaybe<MaritalStatus>;
   phone?: InputMaybe<UserPhoneInput>;
 };
 
 export type UpdateUserPasswordInput = {
-  confirmNewPassword: Scalars['String'];
-  newPassword: Scalars['String'];
-  previousPassword: Scalars['String'];
+  confirmNewPassword: Scalars['String']['input'];
+  newPassword: Scalars['String']['input'];
+  previousPassword: Scalars['String']['input'];
 };
 
 export type UpdateUserTagInput = {
-  _id: Scalars['ID'];
-  name: Scalars['String'];
+  _id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
 };
 
 export type UpdateUserTypeInput = {
-  id?: InputMaybe<Scalars['ID']>;
-  userType?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  userType?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type User = {
   __typename?: 'User';
-  _id: Scalars['ID'];
+  _id: Scalars['ID']['output'];
   address?: Maybe<Address>;
-  adminApproved?: Maybe<Scalars['Boolean']>;
+  adminApproved?: Maybe<Scalars['Boolean']['output']>;
   adminFor?: Maybe<Array<Maybe<Organization>>>;
-  appLanguageCode: Scalars['String'];
-  assignedTasks?: Maybe<Array<Maybe<Task>>>;
-  birthDate?: Maybe<Scalars['Date']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
+  appLanguageCode: Scalars['String']['output'];
+  birthDate?: Maybe<Scalars['Date']['output']>;
+  createdAt: Scalars['DateTime']['output'];
   createdEvents?: Maybe<Array<Maybe<Event>>>;
   createdOrganizations?: Maybe<Array<Maybe<Organization>>>;
   educationGrade?: Maybe<EducationGrade>;
-  email: Scalars['EmailAddress'];
+  email: Scalars['EmailAddress']['output'];
   employmentStatus?: Maybe<EmploymentStatus>;
   eventAdmin?: Maybe<Array<Maybe<Event>>>;
-  firstName: Scalars['String'];
+  firstName: Scalars['String']['output'];
   gender?: Maybe<Gender>;
-  image?: Maybe<Scalars['String']>;
+  image?: Maybe<Scalars['String']['output']>;
   joinedOrganizations?: Maybe<Array<Maybe<Organization>>>;
-  lastName: Scalars['String'];
+  lastName: Scalars['String']['output'];
   maritalStatus?: Maybe<MaritalStatus>;
   membershipRequests?: Maybe<Array<Maybe<MembershipRequest>>>;
-  organizationUserBelongsTo?: Maybe<Organization>;
   organizationsBlockedBy?: Maybe<Array<Maybe<Organization>>>;
   phone?: Maybe<UserPhone>;
-  pluginCreationAllowed?: Maybe<Scalars['Boolean']>;
+  pluginCreationAllowed: Scalars['Boolean']['output'];
   registeredEvents?: Maybe<Array<Maybe<Event>>>;
   tagsAssignedWith?: Maybe<UserTagsConnection>;
-  tokenVersion: Scalars['Int'];
-  userType?: Maybe<Scalars['String']>;
+  tokenVersion: Scalars['Int']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  userType: UserType;
 };
 
 
 export type UserTagsAssignedWithArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['PositiveInt']>;
-  last?: InputMaybe<Scalars['PositiveInt']>;
-  organizationId?: InputMaybe<Scalars['ID']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['PositiveInt']['input']>;
+  last?: InputMaybe<Scalars['PositiveInt']['input']>;
+  organizationId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type UserAndOrganizationInput = {
-  organizationId: Scalars['ID'];
-  userId: Scalars['ID'];
+  organizationId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
 };
 
 export type UserConnection = {
@@ -1756,25 +2244,34 @@ export type UserConnection = {
 
 export type UserCustomData = {
   __typename?: 'UserCustomData';
-  _id: Scalars['ID'];
-  organizationId: Scalars['ID'];
-  userId: Scalars['ID'];
-  values: Scalars['JSON'];
+  _id: Scalars['ID']['output'];
+  organizationId: Scalars['ID']['output'];
+  userId: Scalars['ID']['output'];
+  values: Scalars['JSON']['output'];
 };
 
 export type UserEdge = {
   __typename?: 'UserEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: User;
 };
 
+export type UserFamily = {
+  __typename?: 'UserFamily';
+  _id: Scalars['ID']['output'];
+  admins: Array<User>;
+  creator: User;
+  title?: Maybe<Scalars['String']['output']>;
+  users: Array<User>;
+};
+
 export type UserInput = {
-  appLanguageCode?: InputMaybe<Scalars['String']>;
-  email: Scalars['EmailAddress'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  organizationUserBelongsToId?: InputMaybe<Scalars['ID']>;
-  password: Scalars['String'];
+  appLanguageCode?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['EmailAddress']['input'];
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  organizationUserBelongsToId?: InputMaybe<Scalars['ID']['input']>;
+  password: Scalars['String']['input'];
 };
 
 export type UserOrderByInput =
@@ -1791,22 +2288,22 @@ export type UserOrderByInput =
 
 export type UserPhone = {
   __typename?: 'UserPhone';
-  home?: Maybe<Scalars['PhoneNumber']>;
-  mobile?: Maybe<Scalars['PhoneNumber']>;
-  work?: Maybe<Scalars['PhoneNumber']>;
+  home?: Maybe<Scalars['PhoneNumber']['output']>;
+  mobile?: Maybe<Scalars['PhoneNumber']['output']>;
+  work?: Maybe<Scalars['PhoneNumber']['output']>;
 };
 
 export type UserPhoneInput = {
-  home?: InputMaybe<Scalars['PhoneNumber']>;
-  mobile?: InputMaybe<Scalars['PhoneNumber']>;
-  work?: InputMaybe<Scalars['PhoneNumber']>;
+  home?: InputMaybe<Scalars['PhoneNumber']['input']>;
+  mobile?: InputMaybe<Scalars['PhoneNumber']['input']>;
+  work?: InputMaybe<Scalars['PhoneNumber']['input']>;
 };
 
 export type UserTag = {
   __typename?: 'UserTag';
-  _id: Scalars['ID'];
+  _id: Scalars['ID']['output'];
   childTags: UserTagsConnectionResult;
-  name: Scalars['String'];
+  name: Scalars['String']['output'];
   organization?: Maybe<Organization>;
   parentTag?: Maybe<UserTag>;
   usersAssignedTo: UsersConnectionResult;
@@ -1824,7 +2321,7 @@ export type UserTagUsersAssignedToArgs = {
 
 export type UserTagEdge = {
   __typename?: 'UserTagEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: UserTag;
 };
 
@@ -1835,9 +2332,9 @@ export type UserTagsConnection = {
 };
 
 export type UserTagsConnectionInput = {
-  cursor?: InputMaybe<Scalars['String']>;
+  cursor?: InputMaybe<Scalars['String']['input']>;
   direction: PaginationDirection;
-  limit: Scalars['PositiveInt'];
+  limit: Scalars['PositiveInt']['input'];
 };
 
 export type UserTagsConnectionResult = {
@@ -1848,42 +2345,43 @@ export type UserTagsConnectionResult = {
 
 export type UserType =
   | 'ADMIN'
+  | 'NON_USER'
   | 'SUPERADMIN'
   | 'USER';
 
 export type UserWhereInput = {
-  admin_for?: InputMaybe<Scalars['ID']>;
-  appLanguageCode?: InputMaybe<Scalars['String']>;
-  appLanguageCode_contains?: InputMaybe<Scalars['String']>;
-  appLanguageCode_in?: InputMaybe<Array<Scalars['String']>>;
-  appLanguageCode_not?: InputMaybe<Scalars['String']>;
-  appLanguageCode_not_in?: InputMaybe<Array<Scalars['String']>>;
-  appLanguageCode_starts_with?: InputMaybe<Scalars['String']>;
-  email?: InputMaybe<Scalars['EmailAddress']>;
-  email_contains?: InputMaybe<Scalars['EmailAddress']>;
-  email_in?: InputMaybe<Array<Scalars['EmailAddress']>>;
-  email_not?: InputMaybe<Scalars['EmailAddress']>;
-  email_not_in?: InputMaybe<Array<Scalars['EmailAddress']>>;
-  email_starts_with?: InputMaybe<Scalars['EmailAddress']>;
-  event_title_contains?: InputMaybe<Scalars['String']>;
-  firstName?: InputMaybe<Scalars['String']>;
-  firstName_contains?: InputMaybe<Scalars['String']>;
-  firstName_in?: InputMaybe<Array<Scalars['String']>>;
-  firstName_not?: InputMaybe<Scalars['String']>;
-  firstName_not_in?: InputMaybe<Array<Scalars['String']>>;
-  firstName_starts_with?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['ID']>;
-  id_contains?: InputMaybe<Scalars['ID']>;
-  id_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_not?: InputMaybe<Scalars['ID']>;
-  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
-  id_starts_with?: InputMaybe<Scalars['ID']>;
-  lastName?: InputMaybe<Scalars['String']>;
-  lastName_contains?: InputMaybe<Scalars['String']>;
-  lastName_in?: InputMaybe<Array<Scalars['String']>>;
-  lastName_not?: InputMaybe<Scalars['String']>;
-  lastName_not_in?: InputMaybe<Array<Scalars['String']>>;
-  lastName_starts_with?: InputMaybe<Scalars['String']>;
+  admin_for?: InputMaybe<Scalars['ID']['input']>;
+  appLanguageCode?: InputMaybe<Scalars['String']['input']>;
+  appLanguageCode_contains?: InputMaybe<Scalars['String']['input']>;
+  appLanguageCode_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  appLanguageCode_not?: InputMaybe<Scalars['String']['input']>;
+  appLanguageCode_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  appLanguageCode_starts_with?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['EmailAddress']['input']>;
+  email_contains?: InputMaybe<Scalars['EmailAddress']['input']>;
+  email_in?: InputMaybe<Array<Scalars['EmailAddress']['input']>>;
+  email_not?: InputMaybe<Scalars['EmailAddress']['input']>;
+  email_not_in?: InputMaybe<Array<Scalars['EmailAddress']['input']>>;
+  email_starts_with?: InputMaybe<Scalars['EmailAddress']['input']>;
+  event_title_contains?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  firstName_contains?: InputMaybe<Scalars['String']['input']>;
+  firstName_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  firstName_not?: InputMaybe<Scalars['String']['input']>;
+  firstName_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  firstName_starts_with?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  id_contains?: InputMaybe<Scalars['ID']['input']>;
+  id_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_not?: InputMaybe<Scalars['ID']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']['input']>>;
+  id_starts_with?: InputMaybe<Scalars['ID']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  lastName_contains?: InputMaybe<Scalars['String']['input']>;
+  lastName_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  lastName_not?: InputMaybe<Scalars['String']['input']>;
+  lastName_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  lastName_starts_with?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UsersConnection = {
@@ -1893,9 +2391,9 @@ export type UsersConnection = {
 };
 
 export type UsersConnectionInput = {
-  cursor?: InputMaybe<Scalars['String']>;
+  cursor?: InputMaybe<Scalars['String']['input']>;
   direction: PaginationDirection;
-  limit: Scalars['PositiveInt'];
+  limit: Scalars['PositiveInt']['input'];
 };
 
 export type UsersConnectionResult = {
@@ -1904,15 +2402,29 @@ export type UsersConnectionResult = {
   errors: Array<ConnectionError>;
 };
 
+export type WeekDays =
+  | 'FR'
+  | 'MO'
+  | 'SA'
+  | 'SU'
+  | 'TH'
+  | 'TU'
+  | 'WE';
+
 export type CreateChatInput = {
-  organizationId: Scalars['ID'];
-  userIds: Array<Scalars['ID']>;
+  organizationId: Scalars['ID']['input'];
+  userIds: Array<Scalars['ID']['input']>;
 };
 
 export type CreateGroupChatInput = {
-  organizationId: Scalars['ID'];
-  title: Scalars['String'];
-  userIds: Array<Scalars['ID']>;
+  organizationId: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
+  userIds: Array<Scalars['ID']['input']>;
+};
+
+export type CreateUserFamilyInput = {
+  title: Scalars['String']['input'];
+  userIds: Array<Scalars['ID']['input']>;
 };
 
 
@@ -1978,64 +2490,90 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
   info?: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
 
+/** Mapping of union types */
+export type ResolversUnionTypes<RefType extends Record<string, unknown>> = {
+  ConnectionError: ( InvalidCursor ) | ( MaximumValueError );
+};
+
+/** Mapping of interface types */
+export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
+  Error: ( UnauthenticatedError ) | ( UnauthorizedError );
+  FieldError: ( InvalidCursor ) | ( MaximumLengthError ) | ( MaximumValueError ) | ( MinimumLengthError ) | ( MinimumValueError );
+};
+
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  ActionItem: ResolverTypeWrapper<InterfaceActionItemModel>;
+  ActionItemCategory: ResolverTypeWrapper<InterfaceActionItemCategoryModel>;
+  ActionItemWhereInput: ActionItemWhereInput;
+  ActionItemsOrderByInput: ActionItemsOrderByInput;
   Address: ResolverTypeWrapper<Address>;
   AddressInput: AddressInput;
-  Advertisement: ResolverTypeWrapper<Advertisement>;
+  Advertisement: ResolverTypeWrapper<Omit<Advertisement, 'creator'> & { creator?: Maybe<ResolversTypes['User']> }>;
+  AdvertisementType: AdvertisementType;
+  AgendaCategory: ResolverTypeWrapper<InterfaceAgendaCategoryModel>;
   AggregatePost: ResolverTypeWrapper<AggregatePost>;
   AggregateUser: ResolverTypeWrapper<AggregateUser>;
-  Any: ResolverTypeWrapper<Scalars['Any']>;
+  Any: ResolverTypeWrapper<Scalars['Any']['output']>;
   AuthData: ResolverTypeWrapper<Omit<AuthData, 'user'> & { user: ResolversTypes['User'] }>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CheckIn: ResolverTypeWrapper<InterfaceCheckInModel>;
   CheckInInput: CheckInInput;
   CheckInStatus: ResolverTypeWrapper<Omit<CheckInStatus, 'checkIn' | 'user'> & { checkIn?: Maybe<ResolversTypes['CheckIn']>, user: ResolversTypes['User'] }>;
   Comment: ResolverTypeWrapper<InterfaceCommentModel>;
   CommentInput: CommentInput;
-  ConnectionError: ResolversTypes['InvalidCursor'] | ResolversTypes['MaximumValueError'];
+  ConnectionError: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['ConnectionError']>;
   ConnectionPageInfo: ResolverTypeWrapper<ConnectionPageInfo>;
-  CountryCode: ResolverTypeWrapper<Scalars['CountryCode']>;
+  CountryCode: ResolverTypeWrapper<Scalars['CountryCode']['output']>;
+  CreateActionItemInput: CreateActionItemInput;
+  CreateAgendaCategoryInput: CreateAgendaCategoryInput;
   CreateUserTagInput: CreateUserTagInput;
+  Currency: Currency;
   CursorPaginationInput: CursorPaginationInput;
-  Date: ResolverTypeWrapper<Scalars['Date']>;
-  DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
+  Date: ResolverTypeWrapper<Scalars['Date']['output']>;
+  DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   DeletePayload: ResolverTypeWrapper<DeletePayload>;
   DirectChat: ResolverTypeWrapper<InterfaceDirectChatModel>;
   DirectChatMessage: ResolverTypeWrapper<InterfaceDirectChatMessageModel>;
   Donation: ResolverTypeWrapper<InterfaceDonationModel>;
   DonationWhereInput: DonationWhereInput;
   EducationGrade: EducationGrade;
-  EmailAddress: ResolverTypeWrapper<Scalars['EmailAddress']>;
+  EmailAddress: ResolverTypeWrapper<Scalars['EmailAddress']['output']>;
   EmploymentStatus: EmploymentStatus;
-  Error: ResolversTypes['UnauthenticatedError'] | ResolversTypes['UnauthorizedError'];
+  Error: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Error']>;
   Event: ResolverTypeWrapper<InterfaceEventModel>;
+  EventAttendee: ResolverTypeWrapper<InterfaceEventAttendeeModel>;
   EventAttendeeInput: EventAttendeeInput;
   EventInput: EventInput;
   EventOrderByInput: EventOrderByInput;
-  EventProject: ResolverTypeWrapper<InterfaceEventProjectModel>;
-  EventProjectInput: EventProjectInput;
+  EventVolunteer: ResolverTypeWrapper<InterfaceEventVolunteerModel>;
+  EventVolunteerInput: EventVolunteerInput;
+  EventVolunteerResponse: EventVolunteerResponse;
   EventWhereInput: EventWhereInput;
   ExtendSession: ResolverTypeWrapper<ExtendSession>;
   Feedback: ResolverTypeWrapper<InterfaceFeedbackModel>;
   FeedbackInput: FeedbackInput;
-  FieldError: ResolversTypes['InvalidCursor'] | ResolversTypes['MaximumLengthError'] | ResolversTypes['MaximumValueError'] | ResolversTypes['MinimumLengthError'] | ResolversTypes['MinimumValueError'];
-  Float: ResolverTypeWrapper<Scalars['Float']>;
+  FieldError: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['FieldError']>;
+  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ForgotPasswordData: ForgotPasswordData;
+  Frequency: Frequency;
+  Fund: ResolverTypeWrapper<InterfaceFundModel>;
+  FundInput: FundInput;
+  FundraisingCampaign: ResolverTypeWrapper<Omit<FundraisingCampaign, 'fund'> & { fund: ResolversTypes['Fund'] }>;
   Gender: Gender;
   Group: ResolverTypeWrapper<InterfaceGroupModel>;
   GroupChat: ResolverTypeWrapper<InterfaceGroupChatModel>;
   GroupChatMessage: ResolverTypeWrapper<InterfaceGroupChatMessageModel>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
+  ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   InvalidCursor: ResolverTypeWrapper<InvalidCursor>;
-  JSON: ResolverTypeWrapper<Scalars['JSON']>;
+  JSON: ResolverTypeWrapper<Scalars['JSON']['output']>;
   Language: ResolverTypeWrapper<InterfaceLanguageModel>;
   LanguageInput: LanguageInput;
   LanguageModel: ResolverTypeWrapper<LanguageModel>;
-  Latitude: ResolverTypeWrapper<Scalars['Latitude']>;
+  Latitude: ResolverTypeWrapper<Scalars['Latitude']['output']>;
   LoginInput: LoginInput;
-  Longitude: ResolverTypeWrapper<Scalars['Longitude']>;
+  Longitude: ResolverTypeWrapper<Scalars['Longitude']['output']>;
   MaritalStatus: MaritalStatus;
   MaximumLengthError: ResolverTypeWrapper<MaximumLengthError>;
   MaximumValueError: ResolverTypeWrapper<MaximumValueError>;
@@ -2049,19 +2587,19 @@ export type ResolversTypes = {
   OTPInput: OtpInput;
   Organization: ResolverTypeWrapper<InterfaceOrganizationModel>;
   OrganizationCustomField: ResolverTypeWrapper<OrganizationCustomField>;
-  OrganizationInfoNode: ResolverTypeWrapper<Omit<OrganizationInfoNode, 'creator'> & { creator: ResolversTypes['User'] }>;
+  OrganizationInfoNode: ResolverTypeWrapper<Omit<OrganizationInfoNode, 'creator'> & { creator?: Maybe<ResolversTypes['User']> }>;
   OrganizationInput: OrganizationInput;
   OrganizationOrderByInput: OrganizationOrderByInput;
   OrganizationWhereInput: OrganizationWhereInput;
   OtpData: ResolverTypeWrapper<OtpData>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   PaginationDirection: PaginationDirection;
-  PhoneNumber: ResolverTypeWrapper<Scalars['PhoneNumber']>;
+  PhoneNumber: ResolverTypeWrapper<Scalars['PhoneNumber']['output']>;
   Plugin: ResolverTypeWrapper<InterfacePluginModel>;
   PluginField: ResolverTypeWrapper<InterfacePluginFieldModel>;
   PluginFieldInput: PluginFieldInput;
   PluginInput: PluginInput;
-  PositiveInt: ResolverTypeWrapper<Scalars['PositiveInt']>;
+  PositiveInt: ResolverTypeWrapper<Scalars['PositiveInt']['output']>;
   Post: ResolverTypeWrapper<InterfacePostModel>;
   PostConnection: ResolverTypeWrapper<Omit<PostConnection, 'edges'> & { edges: Array<Maybe<ResolversTypes['Post']>> }>;
   PostInput: PostInput;
@@ -2071,33 +2609,37 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   RecaptchaVerification: RecaptchaVerification;
   Recurrance: Recurrance;
+  RecurrenceRuleInput: RecurrenceRuleInput;
   Status: Status;
-  String: ResolverTypeWrapper<Scalars['String']>;
+  String: ResolverTypeWrapper<Scalars['String']['output']>;
   Subscription: ResolverTypeWrapper<{}>;
-  Task: ResolverTypeWrapper<InterfaceTaskModel>;
-  TaskInput: TaskInput;
-  TaskOrderByInput: TaskOrderByInput;
-  Time: ResolverTypeWrapper<Scalars['Time']>;
+  Time: ResolverTypeWrapper<Scalars['Time']['output']>;
   ToggleUserTagAssignInput: ToggleUserTagAssignInput;
   Translation: ResolverTypeWrapper<Translation>;
   Type: Type;
-  URL: ResolverTypeWrapper<Scalars['URL']>;
+  URL: ResolverTypeWrapper<Scalars['URL']['output']>;
   UnauthenticatedError: ResolverTypeWrapper<UnauthenticatedError>;
   UnauthorizedError: ResolverTypeWrapper<UnauthorizedError>;
+  UpdateActionItemCategoryInput: UpdateActionItemCategoryInput;
+  UpdateActionItemInput: UpdateActionItemInput;
+  UpdateAdvertisementInput: UpdateAdvertisementInput;
+  UpdateAdvertisementPayload: ResolverTypeWrapper<Omit<UpdateAdvertisementPayload, 'advertisement'> & { advertisement?: Maybe<ResolversTypes['Advertisement']> }>;
+  UpdateAgendaCategoryInput: UpdateAgendaCategoryInput;
   UpdateEventInput: UpdateEventInput;
-  UpdateEventProjectInput: UpdateEventProjectInput;
+  UpdateEventVolunteerInput: UpdateEventVolunteerInput;
+  UpdateFundInput: UpdateFundInput;
   UpdateOrganizationInput: UpdateOrganizationInput;
-  UpdateTaskInput: UpdateTaskInput;
   UpdateUserInput: UpdateUserInput;
   UpdateUserPasswordInput: UpdateUserPasswordInput;
   UpdateUserTagInput: UpdateUserTagInput;
   UpdateUserTypeInput: UpdateUserTypeInput;
-  Upload: ResolverTypeWrapper<Scalars['Upload']>;
+  Upload: ResolverTypeWrapper<Scalars['Upload']['output']>;
   User: ResolverTypeWrapper<InterfaceUserModel>;
   UserAndOrganizationInput: UserAndOrganizationInput;
   UserConnection: ResolverTypeWrapper<Omit<UserConnection, 'edges'> & { edges: Array<Maybe<ResolversTypes['User']>> }>;
   UserCustomData: ResolverTypeWrapper<UserCustomData>;
   UserEdge: ResolverTypeWrapper<Omit<UserEdge, 'node'> & { node: ResolversTypes['User'] }>;
+  UserFamily: ResolverTypeWrapper<InterfaceUserFamilyModel>;
   UserInput: UserInput;
   UserOrderByInput: UserOrderByInput;
   UserPhone: ResolverTypeWrapper<UserPhone>;
@@ -2112,64 +2654,76 @@ export type ResolversTypes = {
   UsersConnection: ResolverTypeWrapper<Omit<UsersConnection, 'edges'> & { edges: Array<ResolversTypes['UserEdge']> }>;
   UsersConnectionInput: UsersConnectionInput;
   UsersConnectionResult: ResolverTypeWrapper<Omit<UsersConnectionResult, 'data' | 'errors'> & { data?: Maybe<ResolversTypes['UsersConnection']>, errors: Array<ResolversTypes['ConnectionError']> }>;
+  WeekDays: WeekDays;
   createChatInput: CreateChatInput;
   createGroupChatInput: CreateGroupChatInput;
+  createUserFamilyInput: CreateUserFamilyInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  ActionItem: InterfaceActionItemModel;
+  ActionItemCategory: InterfaceActionItemCategoryModel;
+  ActionItemWhereInput: ActionItemWhereInput;
   Address: Address;
   AddressInput: AddressInput;
-  Advertisement: Advertisement;
+  Advertisement: Omit<Advertisement, 'creator'> & { creator?: Maybe<ResolversParentTypes['User']> };
+  AgendaCategory: InterfaceAgendaCategoryModel;
   AggregatePost: AggregatePost;
   AggregateUser: AggregateUser;
-  Any: Scalars['Any'];
+  Any: Scalars['Any']['output'];
   AuthData: Omit<AuthData, 'user'> & { user: ResolversParentTypes['User'] };
-  Boolean: Scalars['Boolean'];
+  Boolean: Scalars['Boolean']['output'];
   CheckIn: InterfaceCheckInModel;
   CheckInInput: CheckInInput;
   CheckInStatus: Omit<CheckInStatus, 'checkIn' | 'user'> & { checkIn?: Maybe<ResolversParentTypes['CheckIn']>, user: ResolversParentTypes['User'] };
   Comment: InterfaceCommentModel;
   CommentInput: CommentInput;
-  ConnectionError: ResolversParentTypes['InvalidCursor'] | ResolversParentTypes['MaximumValueError'];
+  ConnectionError: ResolversUnionTypes<ResolversParentTypes>['ConnectionError'];
   ConnectionPageInfo: ConnectionPageInfo;
-  CountryCode: Scalars['CountryCode'];
+  CountryCode: Scalars['CountryCode']['output'];
+  CreateActionItemInput: CreateActionItemInput;
+  CreateAgendaCategoryInput: CreateAgendaCategoryInput;
   CreateUserTagInput: CreateUserTagInput;
   CursorPaginationInput: CursorPaginationInput;
-  Date: Scalars['Date'];
-  DateTime: Scalars['DateTime'];
+  Date: Scalars['Date']['output'];
+  DateTime: Scalars['DateTime']['output'];
   DeletePayload: DeletePayload;
   DirectChat: InterfaceDirectChatModel;
   DirectChatMessage: InterfaceDirectChatMessageModel;
   Donation: InterfaceDonationModel;
   DonationWhereInput: DonationWhereInput;
-  EmailAddress: Scalars['EmailAddress'];
-  Error: ResolversParentTypes['UnauthenticatedError'] | ResolversParentTypes['UnauthorizedError'];
+  EmailAddress: Scalars['EmailAddress']['output'];
+  Error: ResolversInterfaceTypes<ResolversParentTypes>['Error'];
   Event: InterfaceEventModel;
+  EventAttendee: InterfaceEventAttendeeModel;
   EventAttendeeInput: EventAttendeeInput;
   EventInput: EventInput;
-  EventProject: InterfaceEventProjectModel;
-  EventProjectInput: EventProjectInput;
+  EventVolunteer: InterfaceEventVolunteerModel;
+  EventVolunteerInput: EventVolunteerInput;
   EventWhereInput: EventWhereInput;
   ExtendSession: ExtendSession;
   Feedback: InterfaceFeedbackModel;
   FeedbackInput: FeedbackInput;
-  FieldError: ResolversParentTypes['InvalidCursor'] | ResolversParentTypes['MaximumLengthError'] | ResolversParentTypes['MaximumValueError'] | ResolversParentTypes['MinimumLengthError'] | ResolversParentTypes['MinimumValueError'];
-  Float: Scalars['Float'];
+  FieldError: ResolversInterfaceTypes<ResolversParentTypes>['FieldError'];
+  Float: Scalars['Float']['output'];
   ForgotPasswordData: ForgotPasswordData;
+  Fund: InterfaceFundModel;
+  FundInput: FundInput;
+  FundraisingCampaign: Omit<FundraisingCampaign, 'fund'> & { fund: ResolversParentTypes['Fund'] };
   Group: InterfaceGroupModel;
   GroupChat: InterfaceGroupChatModel;
   GroupChatMessage: InterfaceGroupChatMessageModel;
-  ID: Scalars['ID'];
-  Int: Scalars['Int'];
+  ID: Scalars['ID']['output'];
+  Int: Scalars['Int']['output'];
   InvalidCursor: InvalidCursor;
-  JSON: Scalars['JSON'];
+  JSON: Scalars['JSON']['output'];
   Language: InterfaceLanguageModel;
   LanguageInput: LanguageInput;
   LanguageModel: LanguageModel;
-  Latitude: Scalars['Latitude'];
+  Latitude: Scalars['Latitude']['output'];
   LoginInput: LoginInput;
-  Longitude: Scalars['Longitude'];
+  Longitude: Scalars['Longitude']['output'];
   MaximumLengthError: MaximumLengthError;
   MaximumValueError: MaximumValueError;
   MembershipRequest: InterfaceMembershipRequestModel;
@@ -2182,17 +2736,17 @@ export type ResolversParentTypes = {
   OTPInput: OtpInput;
   Organization: InterfaceOrganizationModel;
   OrganizationCustomField: OrganizationCustomField;
-  OrganizationInfoNode: Omit<OrganizationInfoNode, 'creator'> & { creator: ResolversParentTypes['User'] };
+  OrganizationInfoNode: Omit<OrganizationInfoNode, 'creator'> & { creator?: Maybe<ResolversParentTypes['User']> };
   OrganizationInput: OrganizationInput;
   OrganizationWhereInput: OrganizationWhereInput;
   OtpData: OtpData;
   PageInfo: PageInfo;
-  PhoneNumber: Scalars['PhoneNumber'];
+  PhoneNumber: Scalars['PhoneNumber']['output'];
   Plugin: InterfacePluginModel;
   PluginField: InterfacePluginFieldModel;
   PluginFieldInput: PluginFieldInput;
   PluginInput: PluginInput;
-  PositiveInt: Scalars['PositiveInt'];
+  PositiveInt: Scalars['PositiveInt']['output'];
   Post: InterfacePostModel;
   PostConnection: Omit<PostConnection, 'edges'> & { edges: Array<Maybe<ResolversParentTypes['Post']>> };
   PostInput: PostInput;
@@ -2200,30 +2754,35 @@ export type ResolversParentTypes = {
   PostWhereInput: PostWhereInput;
   Query: {};
   RecaptchaVerification: RecaptchaVerification;
-  String: Scalars['String'];
+  RecurrenceRuleInput: RecurrenceRuleInput;
+  String: Scalars['String']['output'];
   Subscription: {};
-  Task: InterfaceTaskModel;
-  TaskInput: TaskInput;
-  Time: Scalars['Time'];
+  Time: Scalars['Time']['output'];
   ToggleUserTagAssignInput: ToggleUserTagAssignInput;
   Translation: Translation;
-  URL: Scalars['URL'];
+  URL: Scalars['URL']['output'];
   UnauthenticatedError: UnauthenticatedError;
   UnauthorizedError: UnauthorizedError;
+  UpdateActionItemCategoryInput: UpdateActionItemCategoryInput;
+  UpdateActionItemInput: UpdateActionItemInput;
+  UpdateAdvertisementInput: UpdateAdvertisementInput;
+  UpdateAdvertisementPayload: Omit<UpdateAdvertisementPayload, 'advertisement'> & { advertisement?: Maybe<ResolversParentTypes['Advertisement']> };
+  UpdateAgendaCategoryInput: UpdateAgendaCategoryInput;
   UpdateEventInput: UpdateEventInput;
-  UpdateEventProjectInput: UpdateEventProjectInput;
+  UpdateEventVolunteerInput: UpdateEventVolunteerInput;
+  UpdateFundInput: UpdateFundInput;
   UpdateOrganizationInput: UpdateOrganizationInput;
-  UpdateTaskInput: UpdateTaskInput;
   UpdateUserInput: UpdateUserInput;
   UpdateUserPasswordInput: UpdateUserPasswordInput;
   UpdateUserTagInput: UpdateUserTagInput;
   UpdateUserTypeInput: UpdateUserTypeInput;
-  Upload: Scalars['Upload'];
+  Upload: Scalars['Upload']['output'];
   User: InterfaceUserModel;
   UserAndOrganizationInput: UserAndOrganizationInput;
   UserConnection: Omit<UserConnection, 'edges'> & { edges: Array<Maybe<ResolversParentTypes['User']>> };
   UserCustomData: UserCustomData;
   UserEdge: Omit<UserEdge, 'node'> & { node: ResolversParentTypes['User'] };
+  UserFamily: InterfaceUserFamilyModel;
   UserInput: UserInput;
   UserPhone: UserPhone;
   UserPhoneInput: UserPhoneInput;
@@ -2238,6 +2797,7 @@ export type ResolversParentTypes = {
   UsersConnectionResult: Omit<UsersConnectionResult, 'data' | 'errors'> & { data?: Maybe<ResolversParentTypes['UsersConnection']>, errors: Array<ResolversParentTypes['ConnectionError']> };
   createChatInput: CreateChatInput;
   createGroupChatInput: CreateGroupChatInput;
+  createUserFamilyInput: CreateUserFamilyInput;
 };
 
 export type AuthDirectiveArgs = { };
@@ -2250,9 +2810,38 @@ export type RoleDirectiveArgs = {
 
 export type RoleDirectiveResolver<Result, Parent, ContextType = any, Args = RoleDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
+export type ActionItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['ActionItem'] = ResolversParentTypes['ActionItem']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  actionItemCategory?: Resolver<Maybe<ResolversTypes['ActionItemCategory']>, ParentType, ContextType>;
+  assignee?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  assigner?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  assignmentDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  completionDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  dueDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  event?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType>;
+  isCompleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  postCompletionNotes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  preCompletionNotes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ActionItemCategoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['ActionItemCategory'] = ResolversParentTypes['ActionItemCategory']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  isDisabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  organization?: Resolver<Maybe<ResolversTypes['Organization']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type AddressResolvers<ContextType = any, ParentType extends ResolversParentTypes['Address'] = ResolversParentTypes['Address']> = {
   city?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  countryCode?: Resolver<Maybe<ResolversTypes['CountryCode']>, ParentType, ContextType>;
+  countryCode?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   dependentLocality?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   line1?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   line2?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -2263,13 +2852,28 @@ export type AddressResolvers<ContextType = any, ParentType extends ResolversPare
 };
 
 export type AdvertisementResolvers<ContextType = any, ParentType extends ResolversParentTypes['Advertisement'] = ResolversParentTypes['Advertisement']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   endDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   link?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  orgId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  orgId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   startDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['AdvertisementType'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AgendaCategoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['AgendaCategory'] = ResolversParentTypes['AgendaCategory']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  organization?: Resolver<ResolversTypes['Organization'], ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
+  updatedBy?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2296,11 +2900,11 @@ export type AuthDataResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type CheckInResolvers<ContextType = any, ParentType extends ResolversParentTypes['CheckIn'] = ResolversParentTypes['CheckIn']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  allotedRoom?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  allotedSeat?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   event?: Resolver<ResolversTypes['Event'], ParentType, ContextType>;
   feedbackSubmitted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   time?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -2313,13 +2917,14 @@ export type CheckInStatusResolvers<ContextType = any, ParentType extends Resolve
 };
 
 export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   likeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   likedBy?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
   post?: Resolver<ResolversTypes['Post'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2354,9 +2959,11 @@ export type DeletePayloadResolvers<ContextType = any, ParentType extends Resolve
 
 export type DirectChatResolvers<ContextType = any, ParentType extends ResolversParentTypes['DirectChat'] = ResolversParentTypes['DirectChat']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   messages?: Resolver<Maybe<Array<Maybe<ResolversTypes['DirectChatMessage']>>>, ParentType, ContextType>;
   organization?: Resolver<ResolversTypes['Organization'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -2368,16 +2975,19 @@ export type DirectChatMessageResolvers<ContextType = any, ParentType extends Res
   messageContent?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   receiver?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   sender?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type DonationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Donation'] = ResolversParentTypes['Donation']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   nameOfOrg?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nameOfUser?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   orgId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   payPalId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -2393,14 +3003,16 @@ export type ErrorResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type EventResolvers<ContextType = any, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  admins?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, Partial<EventAdminsArgs>>;
+  actionItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['ActionItem']>>>, ParentType, ContextType>;
+  admins?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType, Partial<EventAdminsArgs>>;
   allDay?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  attendees?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  attendees?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
   attendeesCheckInStatus?: Resolver<Array<ResolversTypes['CheckInStatus']>, ParentType, ContextType>;
   averageFeedbackScore?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  endDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  endDate?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   endTime?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   feedback?: Resolver<Array<ResolversTypes['Feedback']>, ParentType, ContextType>;
   isPublic?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -2409,22 +3021,40 @@ export type EventResolvers<ContextType = any, ParentType extends ResolversParent
   location?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   longitude?: Resolver<Maybe<ResolversTypes['Longitude']>, ParentType, ContextType>;
   organization?: Resolver<Maybe<ResolversTypes['Organization']>, ParentType, ContextType>;
-  projects?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventProject']>>>, ParentType, ContextType>;
   recurrance?: Resolver<Maybe<ResolversTypes['Recurrance']>, ParentType, ContextType>;
   recurring?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   startDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   startTime?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['Status'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type EventProjectResolvers<ContextType = any, ParentType extends ResolversParentTypes['EventProject'] = ResolversParentTypes['EventProject']> = {
+export type EventAttendeeResolvers<ContextType = any, ParentType extends ResolversParentTypes['EventAttendee'] = ResolversParentTypes['EventAttendee']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  event?: Resolver<ResolversTypes['Event'], ParentType, ContextType>;
-  tasks?: Resolver<Maybe<Array<Maybe<ResolversTypes['Task']>>>, ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  checkInId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  eventId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isCheckedIn?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isCheckedOut?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isInvited?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isRegistered?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EventVolunteerResolvers<ContextType = any, ParentType extends ResolversParentTypes['EventVolunteer'] = ResolversParentTypes['EventVolunteer']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  event?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType>;
+  isAssigned?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  isInvited?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  response?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2436,9 +3066,11 @@ export type ExtendSessionResolvers<ContextType = any, ParentType extends Resolve
 
 export type FeedbackResolvers<ContextType = any, ParentType extends ResolversParentTypes['Feedback'] = ResolversParentTypes['Feedback']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   event?: Resolver<ResolversTypes['Event'], ParentType, ContextType>;
   rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   review?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2448,21 +3080,51 @@ export type FieldErrorResolvers<ContextType = any, ParentType extends ResolversP
   path?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
+export type FundResolvers<ContextType = any, ParentType extends ResolversParentTypes['Fund'] = ResolversParentTypes['Fund']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  campaign?: Resolver<Array<Maybe<ResolversTypes['FundraisingCampaign']>>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  isArchived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isDefault?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  organizationId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  refrenceNumber?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  taxDeductible?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FundraisingCampaignResolvers<ContextType = any, ParentType extends ResolversParentTypes['FundraisingCampaign'] = ResolversParentTypes['FundraisingCampaign']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  currency?: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
+  endDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  fund?: Resolver<ResolversTypes['Fund'], ParentType, ContextType>;
+  fundingGoal?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  startDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type GroupResolvers<ContextType = any, ParentType extends ResolversParentTypes['Group'] = ResolversParentTypes['Group']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
-  admins?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
-  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  admins?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   organization?: Resolver<ResolversTypes['Organization'], ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GroupChatResolvers<ContextType = any, ParentType extends ResolversParentTypes['GroupChat'] = ResolversParentTypes['GroupChat']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   messages?: Resolver<Maybe<Array<Maybe<ResolversTypes['GroupChatMessage']>>>, ParentType, ContextType>;
   organization?: Resolver<ResolversTypes['Organization'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -2473,6 +3135,7 @@ export type GroupChatMessageResolvers<ContextType = any, ParentType extends Reso
   groupChatMessageBelongsTo?: Resolver<ResolversTypes['GroupChat'], ParentType, ContextType>;
   messageContent?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sender?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2533,10 +3196,11 @@ export type MembershipRequestResolvers<ContextType = any, ParentType extends Res
 
 export type MessageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Message'] = ResolversParentTypes['Message']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   imageUrl?: Resolver<Maybe<ResolversTypes['URL']>, ParentType, ContextType>;
-  text?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   videoUrl?: Resolver<Maybe<ResolversTypes['URL']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -2548,6 +3212,7 @@ export type MessageChatResolvers<ContextType = any, ParentType extends Resolvers
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   receiver?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   sender?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2575,6 +3240,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   addUserCustomData?: Resolver<ResolversTypes['UserCustomData'], ParentType, ContextType, RequireFields<MutationAddUserCustomDataArgs, 'dataName' | 'dataValue' | 'organizationId'>>;
   addUserImage?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddUserImageArgs, 'file'>>;
   addUserToGroupChat?: Resolver<ResolversTypes['GroupChat'], ParentType, ContextType, RequireFields<MutationAddUserToGroupChatArgs, 'chatId' | 'userId'>>;
+  addUserToUserFamily?: Resolver<ResolversTypes['UserFamily'], ParentType, ContextType, RequireFields<MutationAddUserToUserFamilyArgs, 'familyId' | 'userId'>>;
   adminRemoveEvent?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<MutationAdminRemoveEventArgs, 'eventId'>>;
   adminRemoveGroup?: Resolver<ResolversTypes['GroupChat'], ParentType, ContextType, RequireFields<MutationAdminRemoveGroupArgs, 'groupId'>>;
   assignUserTag?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationAssignUserTagArgs, 'input'>>;
@@ -2582,13 +3248,19 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   blockUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationBlockUserArgs, 'organizationId' | 'userId'>>;
   cancelMembershipRequest?: Resolver<ResolversTypes['MembershipRequest'], ParentType, ContextType, RequireFields<MutationCancelMembershipRequestArgs, 'membershipRequestId'>>;
   checkIn?: Resolver<ResolversTypes['CheckIn'], ParentType, ContextType, RequireFields<MutationCheckInArgs, 'data'>>;
+  checkInEventAttendee?: Resolver<ResolversTypes['EventAttendee'], ParentType, ContextType, RequireFields<MutationCheckInEventAttendeeArgs, 'data'>>;
+  checkOutEventAttendee?: Resolver<ResolversTypes['EventAttendee'], ParentType, ContextType, RequireFields<MutationCheckOutEventAttendeeArgs, 'data'>>;
+  createActionItem?: Resolver<ResolversTypes['ActionItem'], ParentType, ContextType, RequireFields<MutationCreateActionItemArgs, 'actionItemCategoryId' | 'data'>>;
+  createActionItemCategory?: Resolver<ResolversTypes['ActionItemCategory'], ParentType, ContextType, RequireFields<MutationCreateActionItemCategoryArgs, 'name' | 'organizationId'>>;
   createAdmin?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateAdminArgs, 'data'>>;
   createAdvertisement?: Resolver<ResolversTypes['Advertisement'], ParentType, ContextType, RequireFields<MutationCreateAdvertisementArgs, 'endDate' | 'link' | 'name' | 'orgId' | 'startDate' | 'type'>>;
+  createAgendaCategory?: Resolver<ResolversTypes['AgendaCategory'], ParentType, ContextType, RequireFields<MutationCreateAgendaCategoryArgs, 'input'>>;
   createComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<MutationCreateCommentArgs, 'data' | 'postId'>>;
   createDirectChat?: Resolver<ResolversTypes['DirectChat'], ParentType, ContextType, RequireFields<MutationCreateDirectChatArgs, 'data'>>;
   createDonation?: Resolver<ResolversTypes['Donation'], ParentType, ContextType, RequireFields<MutationCreateDonationArgs, 'amount' | 'nameOfOrg' | 'nameOfUser' | 'orgId' | 'payPalId' | 'userId'>>;
-  createEvent?: Resolver<ResolversTypes['Event'], ParentType, ContextType, Partial<MutationCreateEventArgs>>;
-  createEventProject?: Resolver<ResolversTypes['EventProject'], ParentType, ContextType, RequireFields<MutationCreateEventProjectArgs, 'data'>>;
+  createEvent?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<MutationCreateEventArgs, 'data'>>;
+  createEventVolunteer?: Resolver<ResolversTypes['EventVolunteer'], ParentType, ContextType, RequireFields<MutationCreateEventVolunteerArgs, 'data'>>;
+  createFund?: Resolver<ResolversTypes['Fund'], ParentType, ContextType, RequireFields<MutationCreateFundArgs, 'data'>>;
   createGroupChat?: Resolver<ResolversTypes['GroupChat'], ParentType, ContextType, RequireFields<MutationCreateGroupChatArgs, 'data'>>;
   createMember?: Resolver<ResolversTypes['Organization'], ParentType, ContextType, RequireFields<MutationCreateMemberArgs, 'input'>>;
   createMessageChat?: Resolver<ResolversTypes['MessageChat'], ParentType, ContextType, RequireFields<MutationCreateMessageChatArgs, 'data'>>;
@@ -2596,11 +3268,13 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createPlugin?: Resolver<ResolversTypes['Plugin'], ParentType, ContextType, RequireFields<MutationCreatePluginArgs, 'pluginCreatedBy' | 'pluginDesc' | 'pluginName'>>;
   createPost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'data'>>;
   createSampleOrganization?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  createTask?: Resolver<ResolversTypes['Task'], ParentType, ContextType, RequireFields<MutationCreateTaskArgs, 'data' | 'eventProjectId'>>;
+  createUserFamily?: Resolver<ResolversTypes['UserFamily'], ParentType, ContextType, RequireFields<MutationCreateUserFamilyArgs, 'data'>>;
   createUserTag?: Resolver<Maybe<ResolversTypes['UserTag']>, ParentType, ContextType, RequireFields<MutationCreateUserTagArgs, 'input'>>;
   deleteAdvertisementById?: Resolver<ResolversTypes['DeletePayload'], ParentType, ContextType, RequireFields<MutationDeleteAdvertisementByIdArgs, 'id'>>;
+  deleteAgendaCategory?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteAgendaCategoryArgs, 'id'>>;
   deleteDonationById?: Resolver<ResolversTypes['DeletePayload'], ParentType, ContextType, RequireFields<MutationDeleteDonationByIdArgs, 'id'>>;
   forgotPassword?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationForgotPasswordArgs, 'data'>>;
+  inviteEventAttendee?: Resolver<ResolversTypes['EventAttendee'], ParentType, ContextType, RequireFields<MutationInviteEventAttendeeArgs, 'data'>>;
   joinPublicOrganization?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationJoinPublicOrganizationArgs, 'organizationId'>>;
   leaveOrganization?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationLeaveOrganizationArgs, 'organizationId'>>;
   likeComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<MutationLikeCommentArgs, 'id'>>;
@@ -2610,16 +3284,18 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   otp?: Resolver<ResolversTypes['OtpData'], ParentType, ContextType, RequireFields<MutationOtpArgs, 'data'>>;
   recaptcha?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRecaptchaArgs, 'data'>>;
   refreshToken?: Resolver<ResolversTypes['ExtendSession'], ParentType, ContextType, RequireFields<MutationRefreshTokenArgs, 'refreshToken'>>;
-  registerForEvent?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<MutationRegisterForEventArgs, 'id'>>;
+  registerEventAttendee?: Resolver<ResolversTypes['EventAttendee'], ParentType, ContextType, RequireFields<MutationRegisterEventAttendeeArgs, 'data'>>;
+  registerForEvent?: Resolver<ResolversTypes['EventAttendee'], ParentType, ContextType, RequireFields<MutationRegisterForEventArgs, 'id'>>;
   rejectAdmin?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRejectAdminArgs, 'id'>>;
   rejectMembershipRequest?: Resolver<ResolversTypes['MembershipRequest'], ParentType, ContextType, RequireFields<MutationRejectMembershipRequestArgs, 'membershipRequestId'>>;
+  removeActionItem?: Resolver<ResolversTypes['ActionItem'], ParentType, ContextType, RequireFields<MutationRemoveActionItemArgs, 'id'>>;
   removeAdmin?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationRemoveAdminArgs, 'data'>>;
   removeAdvertisement?: Resolver<Maybe<ResolversTypes['Advertisement']>, ParentType, ContextType, RequireFields<MutationRemoveAdvertisementArgs, 'id'>>;
   removeComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<MutationRemoveCommentArgs, 'id'>>;
   removeDirectChat?: Resolver<ResolversTypes['DirectChat'], ParentType, ContextType, RequireFields<MutationRemoveDirectChatArgs, 'chatId' | 'organizationId'>>;
   removeEvent?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<MutationRemoveEventArgs, 'id'>>;
   removeEventAttendee?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationRemoveEventAttendeeArgs, 'data'>>;
-  removeEventProject?: Resolver<ResolversTypes['EventProject'], ParentType, ContextType, RequireFields<MutationRemoveEventProjectArgs, 'id'>>;
+  removeEventVolunteer?: Resolver<ResolversTypes['EventVolunteer'], ParentType, ContextType, RequireFields<MutationRemoveEventVolunteerArgs, 'id'>>;
   removeGroupChat?: Resolver<ResolversTypes['GroupChat'], ParentType, ContextType, RequireFields<MutationRemoveGroupChatArgs, 'chatId'>>;
   removeMember?: Resolver<ResolversTypes['Organization'], ParentType, ContextType, RequireFields<MutationRemoveMemberArgs, 'data'>>;
   removeOrganization?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationRemoveOrganizationArgs, 'id'>>;
@@ -2627,9 +3303,10 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   removeOrganizationImage?: Resolver<ResolversTypes['Organization'], ParentType, ContextType, RequireFields<MutationRemoveOrganizationImageArgs, 'organizationId'>>;
   removePost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationRemovePostArgs, 'id'>>;
   removeSampleOrganization?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  removeTask?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationRemoveTaskArgs, 'id'>>;
   removeUserCustomData?: Resolver<ResolversTypes['UserCustomData'], ParentType, ContextType, RequireFields<MutationRemoveUserCustomDataArgs, 'organizationId'>>;
+  removeUserFamily?: Resolver<ResolversTypes['UserFamily'], ParentType, ContextType, RequireFields<MutationRemoveUserFamilyArgs, 'familyId'>>;
   removeUserFromGroupChat?: Resolver<ResolversTypes['GroupChat'], ParentType, ContextType, RequireFields<MutationRemoveUserFromGroupChatArgs, 'chatId' | 'userId'>>;
+  removeUserFromUserFamily?: Resolver<ResolversTypes['UserFamily'], ParentType, ContextType, RequireFields<MutationRemoveUserFromUserFamilyArgs, 'familyId' | 'userId'>>;
   removeUserImage?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   removeUserTag?: Resolver<Maybe<ResolversTypes['UserTag']>, ParentType, ContextType, RequireFields<MutationRemoveUserTagArgs, 'id'>>;
   revokeRefreshTokenForUser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -2637,7 +3314,6 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   sendMembershipRequest?: Resolver<ResolversTypes['MembershipRequest'], ParentType, ContextType, RequireFields<MutationSendMembershipRequestArgs, 'organizationId'>>;
   sendMessageToDirectChat?: Resolver<ResolversTypes['DirectChatMessage'], ParentType, ContextType, RequireFields<MutationSendMessageToDirectChatArgs, 'chatId' | 'messageContent'>>;
   sendMessageToGroupChat?: Resolver<ResolversTypes['GroupChatMessage'], ParentType, ContextType, RequireFields<MutationSendMessageToGroupChatArgs, 'chatId' | 'messageContent'>>;
-  setTaskVolunteers?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationSetTaskVolunteersArgs, 'id' | 'volunteers'>>;
   signUp?: Resolver<ResolversTypes['AuthData'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'data'>>;
   togglePostPin?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationTogglePostPinArgs, 'id'>>;
   unassignUserTag?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUnassignUserTagArgs, 'input'>>;
@@ -2645,13 +3321,17 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   unlikeComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<MutationUnlikeCommentArgs, 'id'>>;
   unlikePost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationUnlikePostArgs, 'id'>>;
   unregisterForEventByUser?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<MutationUnregisterForEventByUserArgs, 'id'>>;
+  updateActionItem?: Resolver<Maybe<ResolversTypes['ActionItem']>, ParentType, ContextType, RequireFields<MutationUpdateActionItemArgs, 'data' | 'id'>>;
+  updateActionItemCategory?: Resolver<Maybe<ResolversTypes['ActionItemCategory']>, ParentType, ContextType, RequireFields<MutationUpdateActionItemCategoryArgs, 'data' | 'id'>>;
+  updateAdvertisement?: Resolver<Maybe<ResolversTypes['UpdateAdvertisementPayload']>, ParentType, ContextType, RequireFields<MutationUpdateAdvertisementArgs, 'input'>>;
+  updateAgendaCategory?: Resolver<Maybe<ResolversTypes['AgendaCategory']>, ParentType, ContextType, RequireFields<MutationUpdateAgendaCategoryArgs, 'id' | 'input'>>;
   updateEvent?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<MutationUpdateEventArgs, 'id'>>;
-  updateEventProject?: Resolver<ResolversTypes['EventProject'], ParentType, ContextType, RequireFields<MutationUpdateEventProjectArgs, 'data' | 'id'>>;
+  updateEventVolunteer?: Resolver<ResolversTypes['EventVolunteer'], ParentType, ContextType, RequireFields<MutationUpdateEventVolunteerArgs, 'id'>>;
+  updateFund?: Resolver<ResolversTypes['Fund'], ParentType, ContextType, RequireFields<MutationUpdateFundArgs, 'data' | 'id'>>;
   updateLanguage?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateLanguageArgs, 'languageCode'>>;
   updateOrganization?: Resolver<ResolversTypes['Organization'], ParentType, ContextType, RequireFields<MutationUpdateOrganizationArgs, 'id'>>;
   updatePluginStatus?: Resolver<ResolversTypes['Plugin'], ParentType, ContextType, RequireFields<MutationUpdatePluginStatusArgs, 'id' | 'orgId'>>;
   updatePost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationUpdatePostArgs, 'id'>>;
-  updateTask?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationUpdateTaskArgs, 'data' | 'id'>>;
   updateUserPassword?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserPasswordArgs, 'data'>>;
   updateUserProfile?: Resolver<ResolversTypes['User'], ParentType, ContextType, Partial<MutationUpdateUserProfileArgs>>;
   updateUserRoleInOrganization?: Resolver<ResolversTypes['Organization'], ParentType, ContextType, RequireFields<MutationUpdateUserRoleInOrganizationArgs, 'organizationId' | 'role' | 'userId'>>;
@@ -2661,20 +3341,23 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type OrganizationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Organization'] = ResolversParentTypes['Organization']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  admins?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType, Partial<OrganizationAdminsArgs>>;
+  actionItemCategories?: Resolver<Maybe<Array<Maybe<ResolversTypes['ActionItemCategory']>>>, ParentType, ContextType>;
+  address?: Resolver<Maybe<ResolversTypes['Address']>, ParentType, ContextType>;
+  admins?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType, Partial<OrganizationAdminsArgs>>;
+  agendaCategories?: Resolver<Maybe<Array<Maybe<ResolversTypes['AgendaCategory']>>>, ParentType, ContextType>;
   apiUrl?: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
   blockedUsers?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
-  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   customFields?: Resolver<Array<ResolversTypes['OrganizationCustomField']>, ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  isPublic?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  location?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   members?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
   membershipRequests?: Resolver<Maybe<Array<Maybe<ResolversTypes['MembershipRequest']>>>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pinnedPosts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Post']>>>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  userRegistrationRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   userTags?: Resolver<Maybe<ResolversTypes['UserTagsConnection']>, ParentType, ContextType, Partial<OrganizationUserTagsArgs>>;
   visibleInSearch?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -2691,11 +3374,11 @@ export type OrganizationCustomFieldResolvers<ContextType = any, ParentType exten
 export type OrganizationInfoNodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['OrganizationInfoNode'] = ResolversParentTypes['OrganizationInfoNode']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   apiUrl?: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  isPublic?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  userRegistrationRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   visibleInSearch?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -2724,12 +3407,12 @@ export type PluginResolvers<ContextType = any, ParentType extends ResolversParen
   pluginCreatedBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pluginDesc?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pluginName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  uninstalledOrgs?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType>;
+  uninstalledOrgs?: Resolver<Maybe<Array<ResolversTypes['ID']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PluginFieldResolvers<ContextType = any, ParentType extends ResolversParentTypes['PluginField'] = ResolversParentTypes['PluginField']> = {
-  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   key?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['Status'], ParentType, ContextType>;
   value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -2744,8 +3427,8 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   _id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   commentCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType>;
-  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   imageUrl?: Resolver<Maybe<ResolversTypes['URL']>, ParentType, ContextType>;
   likeCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   likedBy?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
@@ -2753,6 +3436,7 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   pinned?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   videoUrl?: Resolver<Maybe<ResolversTypes['URL']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -2765,19 +3449,28 @@ export type PostConnectionResolvers<ContextType = any, ParentType extends Resolv
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  actionItem?: Resolver<Maybe<ResolversTypes['ActionItem']>, ParentType, ContextType, RequireFields<QueryActionItemArgs, 'id'>>;
+  actionItemCategoriesByOrganization?: Resolver<Maybe<Array<Maybe<ResolversTypes['ActionItemCategory']>>>, ParentType, ContextType, RequireFields<QueryActionItemCategoriesByOrganizationArgs, 'organizationId'>>;
+  actionItemCategory?: Resolver<Maybe<ResolversTypes['ActionItemCategory']>, ParentType, ContextType, RequireFields<QueryActionItemCategoryArgs, 'id'>>;
+  actionItemsByEvent?: Resolver<Maybe<Array<Maybe<ResolversTypes['ActionItem']>>>, ParentType, ContextType, RequireFields<QueryActionItemsByEventArgs, 'eventId'>>;
+  actionItemsByOrganization?: Resolver<Maybe<Array<Maybe<ResolversTypes['ActionItem']>>>, ParentType, ContextType, RequireFields<QueryActionItemsByOrganizationArgs, 'organizationId'>>;
   adminPlugin?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plugin']>>>, ParentType, ContextType, RequireFields<QueryAdminPluginArgs, 'orgId'>>;
+  agendaCategory?: Resolver<ResolversTypes['AgendaCategory'], ParentType, ContextType, RequireFields<QueryAgendaCategoryArgs, 'id'>>;
   checkAuth?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   customDataByOrganization?: Resolver<Array<ResolversTypes['UserCustomData']>, ParentType, ContextType, RequireFields<QueryCustomDataByOrganizationArgs, 'organizationId'>>;
   customFieldsByOrganization?: Resolver<Maybe<Array<Maybe<ResolversTypes['OrganizationCustomField']>>>, ParentType, ContextType, RequireFields<QueryCustomFieldsByOrganizationArgs, 'id'>>;
   directChatsByUserID?: Resolver<Maybe<Array<Maybe<ResolversTypes['DirectChat']>>>, ParentType, ContextType, RequireFields<QueryDirectChatsByUserIdArgs, 'id'>>;
   directChatsMessagesByChatID?: Resolver<Maybe<Array<Maybe<ResolversTypes['DirectChatMessage']>>>, ParentType, ContextType, RequireFields<QueryDirectChatsMessagesByChatIdArgs, 'id'>>;
   event?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType, RequireFields<QueryEventArgs, 'id'>>;
+  eventVolunteersByEvent?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventVolunteer']>>>, ParentType, ContextType, RequireFields<QueryEventVolunteersByEventArgs, 'id'>>;
   eventsByOrganization?: Resolver<Maybe<Array<Maybe<ResolversTypes['Event']>>>, ParentType, ContextType, Partial<QueryEventsByOrganizationArgs>>;
   eventsByOrganizationConnection?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType, Partial<QueryEventsByOrganizationConnectionArgs>>;
   getAdvertisements?: Resolver<Maybe<Array<Maybe<ResolversTypes['Advertisement']>>>, ParentType, ContextType>;
   getDonationById?: Resolver<ResolversTypes['Donation'], ParentType, ContextType, RequireFields<QueryGetDonationByIdArgs, 'id'>>;
   getDonationByOrgId?: Resolver<Maybe<Array<Maybe<ResolversTypes['Donation']>>>, ParentType, ContextType, RequireFields<QueryGetDonationByOrgIdArgs, 'orgId'>>;
   getDonationByOrgIdConnection?: Resolver<Array<ResolversTypes['Donation']>, ParentType, ContextType, RequireFields<QueryGetDonationByOrgIdConnectionArgs, 'orgId'>>;
+  getEventAttendee?: Resolver<Maybe<ResolversTypes['EventAttendee']>, ParentType, ContextType, RequireFields<QueryGetEventAttendeeArgs, 'eventId' | 'userId'>>;
+  getEventAttendeesByEventId?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventAttendee']>>>, ParentType, ContextType, RequireFields<QueryGetEventAttendeesByEventIdArgs, 'eventId'>>;
   getPlugins?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plugin']>>>, ParentType, ContextType>;
   getlanguage?: Resolver<Maybe<Array<Maybe<ResolversTypes['Translation']>>>, ParentType, ContextType, RequireFields<QueryGetlanguageArgs, 'lang_code'>>;
   hasSubmittedFeedback?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<QueryHasSubmittedFeedbackArgs, 'eventId' | 'userId'>>;
@@ -2807,19 +3500,6 @@ export type SubscriptionResolvers<ContextType = any, ParentType extends Resolver
   onPluginUpdate?: SubscriptionResolver<Maybe<ResolversTypes['Plugin']>, "onPluginUpdate", ParentType, ContextType>;
 };
 
-export type TaskResolvers<ContextType = any, ParentType extends ResolversParentTypes['Task'] = ResolversParentTypes['Task']> = {
-  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  completed?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  deadline?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  event?: Resolver<ResolversTypes['Event'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  volunteers?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export interface TimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Time'], any> {
   name: 'Time';
 }
@@ -2846,6 +3526,11 @@ export type UnauthorizedErrorResolvers<ContextType = any, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateAdvertisementPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateAdvertisementPayload'] = ResolversParentTypes['UpdateAdvertisementPayload']> = {
+  advertisement?: Resolver<Maybe<ResolversTypes['Advertisement']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
   name: 'Upload';
 }
@@ -2856,9 +3541,8 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   adminApproved?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   adminFor?: Resolver<Maybe<Array<Maybe<ResolversTypes['Organization']>>>, ParentType, ContextType>;
   appLanguageCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  assignedTasks?: Resolver<Maybe<Array<Maybe<ResolversTypes['Task']>>>, ParentType, ContextType>;
   birthDate?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
-  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   createdEvents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Event']>>>, ParentType, ContextType>;
   createdOrganizations?: Resolver<Maybe<Array<Maybe<ResolversTypes['Organization']>>>, ParentType, ContextType>;
   educationGrade?: Resolver<Maybe<ResolversTypes['EducationGrade']>, ParentType, ContextType>;
@@ -2872,14 +3556,14 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   maritalStatus?: Resolver<Maybe<ResolversTypes['MaritalStatus']>, ParentType, ContextType>;
   membershipRequests?: Resolver<Maybe<Array<Maybe<ResolversTypes['MembershipRequest']>>>, ParentType, ContextType>;
-  organizationUserBelongsTo?: Resolver<Maybe<ResolversTypes['Organization']>, ParentType, ContextType>;
   organizationsBlockedBy?: Resolver<Maybe<Array<Maybe<ResolversTypes['Organization']>>>, ParentType, ContextType>;
   phone?: Resolver<Maybe<ResolversTypes['UserPhone']>, ParentType, ContextType>;
-  pluginCreationAllowed?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  pluginCreationAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   registeredEvents?: Resolver<Maybe<Array<Maybe<ResolversTypes['Event']>>>, ParentType, ContextType>;
   tagsAssignedWith?: Resolver<Maybe<ResolversTypes['UserTagsConnection']>, ParentType, ContextType, Partial<UserTagsAssignedWithArgs>>;
   tokenVersion?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  userType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  userType?: Resolver<ResolversTypes['UserType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2901,6 +3585,15 @@ export type UserCustomDataResolvers<ContextType = any, ParentType extends Resolv
 export type UserEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserEdge'] = ResolversParentTypes['UserEdge']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserFamilyResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserFamily'] = ResolversParentTypes['UserFamily']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  admins?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2952,8 +3645,11 @@ export type UsersConnectionResultResolvers<ContextType = any, ParentType extends
 };
 
 export type Resolvers<ContextType = any> = {
+  ActionItem?: ActionItemResolvers<ContextType>;
+  ActionItemCategory?: ActionItemCategoryResolvers<ContextType>;
   Address?: AddressResolvers<ContextType>;
   Advertisement?: AdvertisementResolvers<ContextType>;
+  AgendaCategory?: AgendaCategoryResolvers<ContextType>;
   AggregatePost?: AggregatePostResolvers<ContextType>;
   AggregateUser?: AggregateUserResolvers<ContextType>;
   Any?: GraphQLScalarType;
@@ -2973,10 +3669,13 @@ export type Resolvers<ContextType = any> = {
   EmailAddress?: GraphQLScalarType;
   Error?: ErrorResolvers<ContextType>;
   Event?: EventResolvers<ContextType>;
-  EventProject?: EventProjectResolvers<ContextType>;
+  EventAttendee?: EventAttendeeResolvers<ContextType>;
+  EventVolunteer?: EventVolunteerResolvers<ContextType>;
   ExtendSession?: ExtendSessionResolvers<ContextType>;
   Feedback?: FeedbackResolvers<ContextType>;
   FieldError?: FieldErrorResolvers<ContextType>;
+  Fund?: FundResolvers<ContextType>;
+  FundraisingCampaign?: FundraisingCampaignResolvers<ContextType>;
   Group?: GroupResolvers<ContextType>;
   GroupChat?: GroupChatResolvers<ContextType>;
   GroupChatMessage?: GroupChatMessageResolvers<ContextType>;
@@ -3007,17 +3706,18 @@ export type Resolvers<ContextType = any> = {
   PostConnection?: PostConnectionResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
-  Task?: TaskResolvers<ContextType>;
   Time?: GraphQLScalarType;
   Translation?: TranslationResolvers<ContextType>;
   URL?: GraphQLScalarType;
   UnauthenticatedError?: UnauthenticatedErrorResolvers<ContextType>;
   UnauthorizedError?: UnauthorizedErrorResolvers<ContextType>;
+  UpdateAdvertisementPayload?: UpdateAdvertisementPayloadResolvers<ContextType>;
   Upload?: GraphQLScalarType;
   User?: UserResolvers<ContextType>;
   UserConnection?: UserConnectionResolvers<ContextType>;
   UserCustomData?: UserCustomDataResolvers<ContextType>;
   UserEdge?: UserEdgeResolvers<ContextType>;
+  UserFamily?: UserFamilyResolvers<ContextType>;
   UserPhone?: UserPhoneResolvers<ContextType>;
   UserTag?: UserTagResolvers<ContextType>;
   UserTagEdge?: UserTagEdgeResolvers<ContextType>;

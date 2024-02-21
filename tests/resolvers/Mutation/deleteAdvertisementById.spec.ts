@@ -28,6 +28,7 @@ beforeAll(async () => {
     startDate: new Date(),
     type: "POPUP",
     name: "Cookies at just $5 for a packet",
+    creatorId: temp[0]?._id,
   });
 });
 
@@ -44,7 +45,7 @@ describe("resolvers -> Mutation -> deleteAdvertiementById", () => {
     const deleteDonationByIdPayload = await deleteAdvertisementById?.(
       {},
       args,
-      {}
+      {},
     );
 
     expect(deleteDonationByIdPayload).toEqual({
@@ -60,7 +61,7 @@ describe("resolvers -> Mutation -> deleteAdvertiementById", () => {
     const deleteDonationByIdPayload = await deleteAdvertisementById?.(
       {},
       args,
-      {}
+      {},
     );
 
     expect(deleteDonationByIdPayload).toEqual({

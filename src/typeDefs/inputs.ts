@@ -14,8 +14,6 @@ export const inputs = gql`
   input CheckInInput {
     userId: ID!
     eventId: ID!
-    allotedRoom: String
-    allotedSeat: String
   }
 
   input createChatInput {
@@ -29,9 +27,34 @@ export const inputs = gql`
     title: String!
   }
 
+  input createUserFamilyInput {
+    title: String!
+    userIds: [ID!]!
+  }
+
   input CreateUserTagInput {
     name: String!
     parentTagId: ID
+    organizationId: ID!
+  }
+
+  input CreateActionItemInput {
+    assigneeId: ID!
+    preCompletionNotes: String
+    dueDate: Date
+    eventId: ID
+  }
+
+  input ActionItemWhereInput {
+    actionItemCategory_id: ID
+    event_id: ID
+    is_active: Boolean
+    is_completed: Boolean
+  }
+
+  input CreateAgendaCategoryInput {
+    name: String!
+    description: String
     organizationId: ID!
   }
 
@@ -75,6 +98,18 @@ export const inputs = gql`
     organizationId: ID!
   }
 
+  input EventVolunteerInput {
+    userId: ID!
+    eventId: ID!
+  }
+
+  input UpdateEventVolunteerInput {
+    eventId: ID
+    isAssigned: Boolean
+    isInvited: Boolean
+    response: EventVolunteerResponse
+  }
+
   input EventWhereInput {
     id: ID
     id_not: ID
@@ -107,12 +142,6 @@ export const inputs = gql`
     organization_id: ID
   }
 
-  input EventProjectInput {
-    title: String!
-    description: String!
-    eventId: ID!
-  }
-
   input FeedbackInput {
     eventId: ID!
     rating: Int!
@@ -123,6 +152,14 @@ export const inputs = gql`
     userOtp: String!
     newPassword: String!
     otpToken: String!
+  }
+  input FundInput {
+    name: String!
+    organizationId: ID!
+    refrenceNumber: String
+    taxDeductible: Boolean!
+    isDefault: Boolean!
+    isArchived: Boolean!
   }
 
   input LanguageInput {
@@ -144,12 +181,12 @@ export const inputs = gql`
   input OrganizationInput {
     name: String!
     description: String!
-    location: String
+    address: AddressInput!
     attendees: String
-    isPublic: Boolean!
-    visibleInSearch: Boolean!
     apiUrl: URL
     image: String
+    userRegistrationRequired: Boolean
+    visibleInSearch: Boolean
   }
 
   input OrganizationWhereInput {
@@ -180,10 +217,8 @@ export const inputs = gql`
     apiUrl_not_in: [URL!]
     apiUrl_contains: URL
     apiUrl_starts_with: URL
-
+    userRegistrationRequired: Boolean
     visibleInSearch: Boolean
-
-    isPublic: Boolean
   }
 
   input OTPInput {
@@ -240,15 +275,24 @@ export const inputs = gql`
     recaptchaToken: String!
   }
 
-  input TaskInput {
-    title: String!
-    description: String!
-    deadline: DateTime!
+  input RecurrenceRuleInput {
+    frequency: Frequency
+    weekDays: [WeekDays]
+    count: Int
   }
 
   input ToggleUserTagAssignInput {
     userId: ID!
     tagId: ID!
+  }
+
+  input UpdateActionItemInput {
+    assigneeId: ID
+    preCompletionNotes: String
+    postCompletionNotes: String
+    dueDate: Date
+    completionDate: Date
+    isCompleted: Boolean
   }
 
   input UpdateEventInput {
@@ -267,6 +311,12 @@ export const inputs = gql`
     startTime: Time
     endTime: Time
   }
+  input UpdateFundInput {
+    name: String
+    taxDeductible: Boolean
+    isDefault: Boolean
+    isArchived: Boolean
+  }
 
   # Implements CursorPaginationInput
   input UsersConnectionInput {
@@ -282,17 +332,21 @@ export const inputs = gql`
     limit: PositiveInt!
   }
 
-  input UpdateEventProjectInput {
-    title: String
-    description: String
+  input UpdateAdvertisementInput {
+    _id: ID!
+    name: String
+    link: String
+    type: AdvertisementType
+    startDate: Date
+    endDate: Date
   }
 
   input UpdateOrganizationInput {
     name: String
     description: String
-    isPublic: Boolean
+    address: AddressInput
+    userRegistrationRequired: Boolean
     visibleInSearch: Boolean
-    location: String
   }
 
   input UpdateUserTagInput {
@@ -300,16 +354,19 @@ export const inputs = gql`
     name: String!
   }
 
-  input UpdateTaskInput {
-    title: String
+  input UpdateActionItemCategoryInput {
+    name: String
+    isDisabled: Boolean
+  }
+
+  input UpdateAgendaCategoryInput {
+    name: String
     description: String
-    deadline: DateTime
-    completed: Boolean
   }
 
   input AddressInput {
     city: String
-    countryCode: CountryCode
+    countryCode: String
     dependentLocality: String
     line1: String
     line2: String

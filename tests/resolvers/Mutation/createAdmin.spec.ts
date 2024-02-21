@@ -32,7 +32,7 @@ beforeAll(async () => {
   testOrganization = resultsArray[1];
   const { requestContext } = await import("../../../src/libraries");
   vi.spyOn(requestContext, "translate").mockImplementation(
-    (message) => message
+    (message) => message,
   );
 });
 
@@ -68,9 +68,9 @@ describe("resolvers -> Mutation -> createAdmin", () => {
         },
         {
           $set: {
-            creator: Types.ObjectId().toString(),
+            creatorId: Types.ObjectId().toString(),
           },
-        }
+        },
       );
 
       const args: MutationCreateAdminArgs = {
@@ -98,9 +98,9 @@ describe("resolvers -> Mutation -> createAdmin", () => {
         },
         {
           $set: {
-            creator: testUser?._id,
+            creatorId: testUser?._id,
           },
-        }
+        },
       );
 
       await User.updateOne(
@@ -111,7 +111,7 @@ describe("resolvers -> Mutation -> createAdmin", () => {
           $set: {
             userType: "SUPERADMIN",
           },
-        }
+        },
       );
 
       const args: MutationCreateAdminArgs = {
@@ -148,7 +148,7 @@ describe("resolvers -> Mutation -> createAdmin", () => {
       await createAdminResolver?.({}, args, context);
     } catch (error: any) {
       expect(error.message).toEqual(
-        ORGANIZATION_MEMBER_NOT_FOUND_ERROR.MESSAGE
+        ORGANIZATION_MEMBER_NOT_FOUND_ERROR.MESSAGE,
       );
     }
   });
@@ -167,7 +167,7 @@ describe("resolvers -> Mutation -> createAdmin", () => {
         },
         {
           new: true,
-        }
+        },
       );
 
       if (updatedOrganization !== null) {
@@ -203,7 +203,7 @@ describe("resolvers -> Mutation -> createAdmin", () => {
       },
       {
         new: true,
-      }
+      },
     );
 
     if (updatedOrganization !== null) {

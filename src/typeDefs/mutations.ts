@@ -34,6 +34,18 @@ export const mutations = gql`
 
     addUserToGroupChat(userId: ID!, chatId: ID!): GroupChat! @auth
 
+    addUserToUserFamily(userId: ID!, familyId: ID!): UserFamily! @auth
+
+    removeUserFromUserFamily(userId: ID!, familyId: ID!): UserFamily! @auth
+
+    removeUserFamily(familyId: ID!): UserFamily! @auth
+
+    createUserFamily(data: createUserFamilyInput!): UserFamily! @auth
+
+    checkInEventAttendee(data: EventAttendeeInput!): EventAttendee!
+
+    checkOutEventAttendee(data: EventAttendeeInput!): EventAttendee!
+
     adminRemoveEvent(eventId: ID!): Event! @auth
 
     adminRemoveGroup(groupId: ID!): GroupChat! @auth
@@ -56,6 +68,18 @@ export const mutations = gql`
       @auth
       @role(requires: SUPERADMIN)
 
+    createActionItem(
+      data: CreateActionItemInput!
+      actionItemCategoryId: ID!
+    ): ActionItem! @auth
+
+    createActionItemCategory(
+      name: String!
+      organizationId: ID!
+    ): ActionItemCategory! @auth
+
+    createAgendaCategory(input: CreateAgendaCategoryInput!): AgendaCategory!
+
     createComment(postId: ID!, data: CommentInput!): Comment @auth
 
     createDirectChat(data: createChatInput!): DirectChat! @auth
@@ -69,10 +93,11 @@ export const mutations = gql`
       nameOfOrg: String!
     ): Donation!
 
-    createEvent(data: EventInput): Event! @auth
-
-    createEventProject(data: EventProjectInput!): EventProject! @auth
-
+    createEvent(
+      data: EventInput!
+      recurrenceRuleData: RecurrenceRuleInput
+    ): Event! @auth
+    createFund(data: FundInput!): Fund! @auth
     createGroupChat(data: createGroupChatInput!): GroupChat! @auth
 
     createMessageChat(data: MessageChatInput!): MessageChat! @auth
@@ -103,15 +128,19 @@ export const mutations = gql`
 
     createSampleOrganization: Boolean! @auth
 
-    createTask(data: TaskInput!, eventProjectId: ID!): Task! @auth
-
     deleteAdvertisementById(id: ID!): DeletePayload!
+
+    deleteAgendaCategory(id: ID!): ID!
 
     deleteDonationById(id: ID!): DeletePayload!
 
     forgotPassword(data: ForgotPasswordData!): Boolean!
 
+    inviteEventAttendee(data: EventAttendeeInput!): EventAttendee!
+
     joinPublicOrganization(organizationId: ID!): User! @auth
+
+    createEventVolunteer(data: EventVolunteerInput!): EventVolunteer! @auth
 
     leaveOrganization(organizationId: ID!): User! @auth
 
@@ -129,15 +158,19 @@ export const mutations = gql`
 
     refreshToken(refreshToken: String!): ExtendSession!
 
-    registerForEvent(id: ID!): Event! @auth
+    registerForEvent(id: ID!): EventAttendee! @auth
 
     rejectAdmin(id: ID!): Boolean! @auth @role(requires: SUPERADMIN)
+
+    registerEventAttendee(data: EventAttendeeInput!): EventAttendee!
 
     rejectMembershipRequest(membershipRequestId: ID!): MembershipRequest! @auth
 
     removeAdmin(data: UserAndOrganizationInput!): User!
       @auth
       @role(requires: SUPERADMIN)
+
+    removeActionItem(id: ID!): ActionItem! @auth
 
     removeOrganizationCustomField(
       organizationId: ID!
@@ -152,7 +185,7 @@ export const mutations = gql`
 
     removeEventAttendee(data: EventAttendeeInput!): User! @auth
 
-    removeEventProject(id: ID!): EventProject! @auth
+    removeEventVolunteer(id: ID!): EventVolunteer! @auth
 
     removeGroupChat(chatId: ID!): GroupChat! @auth
 
@@ -171,8 +204,6 @@ export const mutations = gql`
     removeUserTag(id: ID!): UserTag @auth
 
     removeSampleOrganization: Boolean! @auth
-
-    removeTask(id: ID!): Task @auth
 
     removeUserFromGroupChat(userId: ID!, chatId: ID!): GroupChat! @auth
 
@@ -194,11 +225,9 @@ export const mutations = gql`
       messageContent: String!
     ): GroupChatMessage! @auth
 
-    setTaskVolunteers(id: ID!, volunteers: [ID]!): Task @auth
-
     signUp(data: UserInput!, file: String): AuthData!
 
-    togglePostPin(id: ID!): Post! @auth
+    togglePostPin(id: ID!, title: String): Post! @auth
 
     unassignUserTag(input: ToggleUserTagAssignInput!): User @auth
 
@@ -210,11 +239,29 @@ export const mutations = gql`
 
     unregisterForEventByUser(id: ID!): Event! @auth
 
+    updateActionItem(id: ID!, data: UpdateActionItemInput!): ActionItem @auth
+
+    updateActionItemCategory(
+      id: ID!
+      data: UpdateActionItemCategoryInput!
+    ): ActionItemCategory @auth
+
+    updateAgendaCategory(
+      id: ID!
+      input: UpdateAgendaCategoryInput!
+    ): AgendaCategory
+
+    updateAdvertisement(
+      input: UpdateAdvertisementInput!
+    ): UpdateAdvertisementPayload @auth
+
     updateEvent(id: ID!, data: UpdateEventInput): Event! @auth
 
-    updateEventProject(id: ID!, data: UpdateEventProjectInput!): EventProject!
-      @auth
-
+    updateEventVolunteer(
+      id: ID!
+      data: UpdateEventVolunteerInput
+    ): EventVolunteer! @auth
+    updateFund(id: ID!, data: UpdateFundInput!): Fund! @auth
     updatePost(id: ID!, data: PostUpdateInput): Post! @auth
 
     updateLanguage(languageCode: String!): User! @auth
@@ -228,8 +275,6 @@ export const mutations = gql`
     updatePluginStatus(id: ID!, orgId: ID!): Plugin!
 
     updateUserTag(input: UpdateUserTagInput!): UserTag @auth
-
-    updateTask(id: ID!, data: UpdateTaskInput!): Task @auth
 
     updateUserProfile(data: UpdateUserInput, file: String): User! @auth
 
